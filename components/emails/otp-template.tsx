@@ -29,7 +29,7 @@ export const OTPEmail = ({ otpCode }: OTPEmailProps) => {
             <Text style={code}>{otpCode}</Text>
           </Section>
           <Text style={text}>
-            If you didn't request this, you can safely ignore this email.
+            If you didn&apos;t request this, you can safely ignore this email.
           </Text>
         </Container>
       </Body>
