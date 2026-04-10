@@ -47,7 +47,7 @@ async function protect(request: NextRequest) {
   }
 
   if (
-    request.nextUrl.pathname.startsWith("/api/auth/sign-up")  ||
+    request.nextUrl.pathname.startsWith("/api/auth/sign-up") ||
     request.nextUrl.pathname.startsWith("/api/auth/signup")
   ) {
     try {
@@ -80,7 +80,18 @@ export const POST = async (req: NextRequest) => {
 
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      return new Response(null, { status: 429 });
+      const reset = decision.reason.resetTime;
+      let headers: HeadersInit | undefined;
+      if (reset instanceof Date) {
+        const seconds = Math.max(
+          1,
+          Math.ceil((reset.getTime() - Date.now()) / 1000),
+        );
+        headers = {
+          "Retry-After": String(seconds),
+        };
+      }
+      return new Response(null, { status: 429, headers });
     } else if (decision.reason.isEmail()) {
       let message: string;
 
@@ -96,6 +107,9 @@ export const POST = async (req: NextRequest) => {
 
       return new Response(JSON.stringify({ error: { message } }), {
         status: 400,
+        headers: {
+          "content-type": "application/json",
+        },
       });
     } else {
       return new Response(null, { status: 403 });
