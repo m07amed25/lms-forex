@@ -19,4 +19,5 @@ export const env = createEnv({
     ARCJET_ENV: z.string().min(1),
   },
   experimental__runtimeEnv: process.env,
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
