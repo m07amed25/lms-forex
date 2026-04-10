@@ -113,32 +113,26 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={"/"}
-                  className="flex items-center justify-center gap-1.5"
-                >
-                  <CircleUserRoundIcon />
-                  <span>Home Page</span>
-                </Link>
+              <DropdownMenuItem
+                render={<Link href="/" />}
+                className="flex items-center gap-1.5"
+              >
+                <CircleUserRoundIcon />
+                <span>Home Page</span>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={"/admin"}
-                  className="flex items-center justify-center gap-1.5"
-                >
-                  <LayoutDashboardIcon />
-                  Dashboard
-                </Link>
+              <DropdownMenuItem
+                render={<Link href="/admin" />}
+                className="flex items-center gap-1.5"
+              >
+                <LayoutDashboardIcon />
+                Dashboard
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={"/admin/courses"}
-                  className="flex items-center justify-center gap-1.5"
-                >
-                  <Tv2 />
-                  Courses
-                </Link>
+              <DropdownMenuItem
+                render={<Link href="/admin/courses" />}
+                className="flex items-center gap-1.5"
+              >
+                <Tv2 />
+                Courses
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
