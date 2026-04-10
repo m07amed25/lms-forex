@@ -74,3 +74,28 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  fileKey     String
+  price       Float
+  duration    String
+  level       CourseLevel @default(BEGINNER)
+  category    String
+  smallDescription String
+  slug        String @unique
+  isPublished Boolean @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("course")
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
