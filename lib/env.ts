@@ -15,6 +15,8 @@ export const env = createEnv({
     SMTP_PASS: z.string().min(1),
     SMTP_FROM: z.string().min(1),
     SMTP_FROM_NAME: z.string().min(1),
+    ARCJET_KEY: z.string().min(1),
+    ARCJET_ENV: z.string().min(1),
   },
   experimental__runtimeEnv: process.env,
 });
