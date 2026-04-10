@@ -22,8 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { useSignOut } from "@/hooks/use-signout";
 
 interface MenuItem {
   label: string;
@@ -43,20 +42,7 @@ interface SessionUser {
 export function UserMenu({ user }: { user: SessionUser }) {
   const router = useRouter();
 
-  const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-          router.refresh();
-          toast.success("Logged out successfully");
-        },
-        onError: () => {
-          toast.error("Failed to log out");
-        },
-      },
-    });
-  };
+  const handleSignOut = useSignOut();
 
   const initials =
     user.name
