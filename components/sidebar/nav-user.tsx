@@ -16,20 +16,21 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useSignOut } from "@/hooks/use-signout";
 import { authClient } from "@/lib/auth-client";
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
-  CreditCardIcon,
-  BellIcon,
   LogOutIcon,
   LayoutDashboardIcon,
+  Tv2,
 } from "lucide-react";
 import Link from "next/link";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { data: session, isPending } = authClient.useSession();
+  const handleSignOut = useSignOut();
 
   if (isPending) {
     return null;
@@ -123,20 +124,25 @@ export function NavUser() {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={"/"}
+                  href={"/admin"}
                   className="flex items-center justify-center gap-1.5"
                 >
                   <LayoutDashboardIcon />
                   Dashboard
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link
+                  href={"/admin/courses"}
+                  className="flex items-center justify-center gap-1.5"
+                >
+                  <Tv2 />
+                  Courses
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>
