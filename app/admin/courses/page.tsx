@@ -13,7 +13,7 @@ const CoursesPage = () => {
           </p>
         </div>
         <Link
-          href={"/admin/course/create"}
+          href={"/admin/courses/create"}
           className={`${buttonVariants({ variant: "default" })} flex items-center gap-1.5 text-white`}
         >
           <Plus className="h-4 w-4" />
