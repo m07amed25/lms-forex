@@ -102,22 +102,23 @@ const Navbar = () => {
           </div>
         </nav>
 
-        {/*
-        <div className="flex md:hidden flex-1 items-center justify-end gap-4">
+        <div className="flex md:hidden flex-1 items-center justify-end gap-3">
           <ThemeToggle />
           <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="shrink-0">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
+            <SheetTrigger
+              render={
+                <Button variant="outline" size="icon" className="shrink-0">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              }
+            />
             <SheetContent
               side="right"
-              className="flex flex-col justify-between"
+              className="flex w-80 flex-col justify-between p-0"
             >
-              <div className="flex flex-col gap-8">
-                <SheetHeader className="text-left">
+              <div className="flex flex-col gap-0">
+                <SheetHeader className="p-6 border-b bg-muted/30">
                   <SheetTitle>
                     <Link className="flex items-center gap-2.5" href="/">
                       <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 shadow-sm ring-1 ring-primary/20">
@@ -139,32 +140,42 @@ const Navbar = () => {
                     </Link>
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col gap-4">
+                <nav className="flex flex-col p-6 space-y-1">
                   {navItems.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="text-lg font-semibold transition-colors hover:text-primary"
+                      className="group flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium transition-all hover:bg-primary/5 hover:text-primary active:scale-[0.98]"
                     >
-                      {item.name}
+                      <span className="flex-1">{item.name}</span>
+                      <div className="size-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                     </Link>
                   ))}
                 </nav>
               </div>
 
-              <div className="flex flex-col gap-3 pt-6 border-t font-bold">
+              <div className="p-6 border-t bg-muted/10 mt-auto">
                 {session ? (
-                  <div className="flex items-center gap-4">
-                    <UserMenu user={session.user} />
-                    <span className="text-sm">{session.user.name}</span>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-4 rounded-xl border bg-card p-3 shadow-sm">
+                      <UserMenu user={session.user} />
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="text-sm font-semibold truncate">
+                          {session.user.name}
+                        </span>
+                        <span className="text-xs text-muted-foreground truncate">
+                          {session.user.email}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 ) : (
-                  <>
+                  <div className="flex flex-col gap-3">
                     <Link
                       href={"/login"}
                       className={buttonVariants({
                         variant: "outline",
-                        className: "w-full justify-center text-lg py-6",
+                        className: "w-full justify-center text-base py-6 rounded-xl",
                       })}
                     >
                       Log in
@@ -173,17 +184,18 @@ const Navbar = () => {
                       href={"/login"}
                       className={buttonVariants({
                         variant: "default",
-                        className: "w-full justify-center text-lg py-6",
+                        className:
+                          "w-full justify-center text-base py-6 rounded-xl shadow-lg shadow-primary/20",
                       })}
                     >
                       Get Started
                     </Link>
-                  </>
+                  </div>
                 )}
               </div>
             </SheetContent>
           </Sheet>
-        </div> */}
+        </div>
       </div>
     </header>
   );

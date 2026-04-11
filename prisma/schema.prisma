@@ -23,6 +23,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  courses       Course[]
+
   @@unique([email])
   @@map("user")
 }
@@ -82,20 +84,31 @@ model Course {
   fileKey     String
   price       Float
   duration    String
-  level       CourseLevel @default(BEGINNER)
+  level       CourseLevel @default(Beginner)
   category    String
   smallDescription String
+
   slug        String @unique
   isPublished Boolean @default(false)
+  status      CourseStatus @default(Draft)
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  userId      String
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
   @@map("course")
 }
 
 enum CourseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
+  Beginner
+  Intermediate
+  Advanced
+}
+
+enum CourseStatus {
+  Draft
+  Published
 }
