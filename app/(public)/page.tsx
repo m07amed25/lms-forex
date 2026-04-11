@@ -62,8 +62,7 @@ const features: FeatureProps[] = [
   },
   {
     title: "Lifetime Access",
-    description:
-      "All courses and future updates included — no recurring fees.",
+    description: "All courses and future updates included — no recurring fees.",
     icon: <Zap className="size-5" />,
   },
 ];
@@ -182,17 +181,16 @@ const faqItems: FAQItem[] = [
   },
 ];
 
-/* ───────────────── page ───────────────── */
-
 export default function Home() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────── */}
-      <section className="relative overflow-hidden py-20 md:py-32">
-        {/* Decorative gradient blobs */}
-        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-primary/5 blur-3xl" />
-        <div className="pointer-events-none absolute top-20 -right-60 w-[500px] h-[500px] rounded-full bg-primary/8 blur-3xl" />
-
+      <section
+        className="relative py-20 md:py-32"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.08) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 80% 20%, hsl(var(--primary) / 0.06) 0%, transparent 70%)",
+        }}
+      >
         <div className="relative flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
           <Badge
             variant="outline"
@@ -242,7 +240,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── STATS TICKER ─────────────────────── */}
       <section className="py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
           {stats.map((stat) => (
@@ -261,7 +258,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FEATURES ─────────────────────────── */}
       <section className="py-24">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge
@@ -286,7 +282,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── COURSE PREVIEWS ──────────────────── */}
       <section className="py-24">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge
@@ -326,7 +321,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────── */}
       <section className="py-24">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge
@@ -351,7 +345,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ─────────────────────── */}
       <section className="py-24">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge
@@ -415,7 +408,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FAQ ───────────────────────────────── */}
       <section className="py-24">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge
@@ -439,7 +431,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA ───────────────────────────────── */}
       <section className="py-24 mb-8">
         <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-12 md:p-20 text-center">
           {/* Decorative blob */}
@@ -450,9 +441,9 @@ export default function Home() {
               Ready to transform your trading?
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Join thousands of students who have mastered forex trading with our
-              proven courses. Start your journey today — your future self will
-              thank you.
+              Join thousands of students who have mastered forex trading with
+              our proven courses. Start your journey today — your future self
+              will thank you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               <Link
@@ -474,7 +465,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FOOTER ────────────────────────────── */}
       <footer className="border-t py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center md:items-start gap-2">
@@ -491,13 +481,22 @@ export default function Home() {
             </p>
           </div>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/courses" className="hover:text-primary transition-colors">
+            <Link
+              href="/courses"
+              className="hover:text-primary transition-colors"
+            >
               Courses
             </Link>
-            <Link href="/dashboard" className="hover:text-primary transition-colors">
+            <Link
+              href="/dashboard"
+              className="hover:text-primary transition-colors"
+            >
               Dashboard
             </Link>
-            <Link href="/login" className="hover:text-primary transition-colors">
+            <Link
+              href="/login"
+              className="hover:text-primary transition-colors"
+            >
               Sign In
             </Link>
           </div>
@@ -509,8 +508,6 @@ export default function Home() {
     </>
   );
 }
-
-/* ───────────────── components ───────────────── */
 
 function FeatureCard({ title, description, icon }: FeatureProps) {
   return (
@@ -590,10 +587,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         {/* Stars */}
         <div className="flex gap-0.5">
           {Array.from({ length: testimonial.rating }).map((_, i) => (
-            <Star
-              key={i}
-              className="size-4 fill-amber-400 text-amber-400"
-            />
+            <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
           ))}
         </div>
 
@@ -611,9 +605,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           </div>
           <div>
             <p className="text-sm font-semibold">{testimonial.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {testimonial.role}
-            </p>
+            <p className="text-xs text-muted-foreground">{testimonial.role}</p>
           </div>
         </div>
       </CardContent>
