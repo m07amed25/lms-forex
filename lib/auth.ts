@@ -1,3 +1,5 @@
+import "server-only";
+
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
@@ -40,18 +42,22 @@ export const auth = betterAuth({
       create: {
         after: async (session) => {
           console.log(`[Auth Hook] Session created for user ${session.userId}`);
-          
+
           // Get user details
           const user = await prisma.user.findUnique({
-            where: { id: session.userId }
+            where: { id: session.userId },
           });
 
           if (!user) {
-            console.error(`[Auth Hook] User not found for session ${session.userId}`);
+            console.error(
+              `[Auth Hook] User not found for session ${session.userId}`,
+            );
             return;
           }
 
-          console.log(`[Auth Hook] Sending login notification to ${user.email}...`);
+          console.log(
+            `[Auth Hook] Sending login notification to ${user.email}...`,
+          );
 
           try {
             const html = await render(
@@ -72,12 +78,17 @@ export const auth = betterAuth({
               subject: "New Login Detected - ForexWith.Salma",
               html,
             });
-            console.log(`[Auth Hook] Login notification sent to ${user.email}: ${info.messageId}`);
+            console.log(
+              `[Auth Hook] Login notification sent to ${user.email}: ${info.messageId}`,
+            );
           } catch (err) {
-            console.error("[Auth Hook] Failed to send login notification:", err);
+            console.error(
+              "[Auth Hook] Failed to send login notification:",
+              err,
+            );
           }
-        }
-      }
-    }
+        },
+      },
+    },
   },
 });

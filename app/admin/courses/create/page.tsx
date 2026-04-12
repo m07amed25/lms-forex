@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Plus, Save, SparkleIcon } from "lucide-react";
+import { ArrowLeft, Loader2, Plus, Save, SparkleIcon } from "lucide-react";
 import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,8 +49,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/rich-text-editor/editor";
+import Uploader from "@/components/file-uploader/Uploader";
+import { useTransition } from "react";
+import { createCourse } from "./actions";
+import { tryCatch } from "@/hooks/try-catch";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const CreateCoursePage = () => {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<CreateCourseInput, unknown, CreateCourseSchema>({
     resolver: zodResolver(createCourseSchema),
     defaultValues: {
@@ -68,7 +77,22 @@ const CreateCoursePage = () => {
   });
 
   function onSubmit(values: CreateCourseSchema) {
-    console.log(values);
+    startTransition(async () => {
+      const { data: result, error } = await tryCatch(createCourse(values));
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (result?.status === "success") {
+        toast.success(result.message);
+        form.reset();
+        router.push("/admin/courses");
+      } else if (result?.status === "error") {
+        toast.error(result.message);
+      }
+    });
   }
 
   return (
@@ -224,10 +248,7 @@ const CreateCoursePage = () => {
                   <FormItem>
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter course thumbnail url"
-                        {...field}
-                      />
+                      <Uploader value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -243,7 +264,7 @@ const CreateCoursePage = () => {
                       <FormLabel>Category</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className={"w-full"}>
@@ -270,7 +291,7 @@ const CreateCoursePage = () => {
                       <FormLabel>Level</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className={"w-full"}>
@@ -333,10 +354,7 @@ const CreateCoursePage = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className={"w-full"}>
                           <SelectValue placeholder="Select Status" />
@@ -355,8 +373,21 @@ const CreateCoursePage = () => {
                 )}
               />
 
-              <Button>
-                Create Course <Plus size={16} />
+              <Button
+                type="submit"
+                form="course-create-form"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    Create Course <Plus size={16} />
+                  </>
+                )}
               </Button>
             </form>
           </Form>

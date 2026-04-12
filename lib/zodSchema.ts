@@ -24,7 +24,7 @@ export const createCourseSchema = z.object({
   description: z
     .string()
     .min(10, { message: "Description is required" })
-    .max(1000, { message: "Description is too long" }),
+    .max(10000, { message: "Description is too long" }),
   fileKey: z.string().min(1, { message: "File key is required" }),
   price: z.coerce.number().min(1, { message: "Price is required" }),
   duration: z.coerce
@@ -40,7 +40,7 @@ export const createCourseSchema = z.object({
   smallDescription: z
     .string()
     .min(3, { message: "Small description is required" })
-    .max(200, { message: "Small description is too long" }),
+    .max(500, { message: "Small description is too long" }),
   slug: z.string().min(3, { message: "Slug is required" }),
   status: z
     .enum(courseStatus, { message: "Status is required" })

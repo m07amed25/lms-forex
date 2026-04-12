@@ -83,7 +83,7 @@ model Course {
   description String
   fileKey     String
   price       Float
-  duration    String
+  duration    Float
   level       CourseLevel @default(Beginner)
   category    String
   smallDescription String
