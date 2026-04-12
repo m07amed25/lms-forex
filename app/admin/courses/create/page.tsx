@@ -375,7 +375,6 @@ const CreateCoursePage = () => {
 
               <Button
                 type="submit"
-                form="course-create-form"
                 disabled={isPending}
               >
                 {isPending ? (
