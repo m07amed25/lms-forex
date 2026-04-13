@@ -35,9 +35,15 @@ export async function DELETE(request: Request) {
       fingerprint,
     });
 
-    console.log("Arcjet Delete Decision:", decision.conclusion, "Rule:", decision.reason);
-
     if (decision.isDenied()) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Arcjet delete denied", {
+          conclusion: decision.conclusion,
+          reason: decision.reason,
+        });
+      } else {
+        console.warn("Arcjet delete denied");
+      }
       if (decision.reason.isRateLimit()) {
         return NextResponse.json(
           { error: "Too many requests. Please try again in a minute." },
