@@ -6,9 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3 } from "@/lib/S3Client";
 import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import ip from "@arcjet/ip";
+import { getAdmin } from "@/app/data/admin/require-admin";
+
+export const dynamic = "force-dynamic";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, "File name is required"),
@@ -33,17 +34,23 @@ const aj = arcjet
   );
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const admin = await getAdmin();
 
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
-    const fingerprint = session?.user?.id || ip(request) || "127.0.0.1";
+    const fingerprint = admin.id || ip(request) || "127.0.0.1";
     const decision = await aj.protect(request, {
       fingerprint,
     });
 
-    console.log("Arcjet Decision:", decision.conclusion, "Rule:", decision.reason);
+    console.log(
+      "Arcjet Decision:",
+      decision.conclusion,
+      "Rule:",
+      decision.reason,
+    );
 
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
