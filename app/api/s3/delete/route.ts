@@ -1,11 +1,10 @@
 import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
-import { auth } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { S3 } from "@/lib/S3Client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import ip from "@arcjet/ip";
+import { getAdmin } from "@/app/data/admin/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +24,14 @@ const aj = arcjet
   );
 
 export async function DELETE(request: Request) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const admin = await getAdmin();
+
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
 
   try {
-    const fingerprint = session?.user?.id || ip(request) || "127.0.0.1";
+    const fingerprint = admin.id || ip(request) || "127.0.0.1";
     const decision = await aj.protect(request, {
       fingerprint,
     });

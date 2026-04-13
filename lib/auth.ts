@@ -1,5 +1,3 @@
-import "server-only";
-
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
@@ -10,11 +8,15 @@ import { render } from "@react-email/components";
 import { OTPEmail } from "@/components/emails/otp-template";
 import { LoginNotificationEmail } from "@/components/emails/login-notification";
 import React from "react";
+import { admin } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  logger: {
+    level: "debug",
+  },
   socialProviders: {
     github: {
       clientId: env.GITHUB_ID,
@@ -36,6 +38,7 @@ export const auth = betterAuth({
         });
       },
     }),
+    admin(),
   ],
   databaseHooks: {
     session: {

@@ -2,20 +2,35 @@
 
 import { prisma } from "@/lib/db";
 import { createCourseSchema, CreateCourseSchema } from "@/lib/zodSchema";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { ApiResponse } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
+import { requireAdmin } from "@/app/data/admin/require-admin";
+import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
+import { request } from "@arcjet/next";
+import ip from "@arcjet/ip";
+
+const aj = arcjet
+  .withRule(
+    detectBot({
+      mode: "LIVE",
+      allow: [],
+    }),
+  )
+  .withRule(
+    fixedWindow({
+      mode: "LIVE",
+      window: "1m",
+      max: 5,
+    }),
+  );
 
 export async function createCourse(
   data: CreateCourseSchema,
 ): Promise<ApiResponse> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const admin = await requireAdmin();
 
-  if (!session) {
+  if (!admin) {
     return {
       status: "error",
       message: "Unauthorized",
@@ -23,6 +38,28 @@ export async function createCourse(
   }
 
   try {
+    // Access request data that Arcjet needs when you call `protect()` similarly
+    // to `await headers()` and `await cookies()` in `next/headers`
+    const req = await request();
+
+    const decision = await aj.protect(req, {
+      fingerprint: admin.id,
+    });
+
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        return {
+          status: "error",
+          message: "Too many requests. Please try again in a minute.",
+        };
+      }
+
+      return {
+        status: "error",
+        message: "Access denied. Security rule triggered.",
+      };
+    }
+
     const validation = createCourseSchema.safeParse(data);
     if (!validation.success) {
       const errorMsg = validation.error.issues.map((e) => e.message).join(", ");
@@ -39,8 +76,8 @@ export async function createCourse(
         ...rest,
         status: status,
         isPublished: status === "Published",
-        duration: Number(duration), // Ensure this is a number (DB expects Float)
-        userId: session.user.id,
+        duration: Number(duration),
+        userId: admin.id,
       },
     });
 

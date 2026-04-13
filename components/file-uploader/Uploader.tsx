@@ -74,13 +74,37 @@ const Uploader = ({ value, onChange }: UploaderProps) => {
         });
 
         if (!presignedRespone.ok) {
-          const errorData = await presignedRespone.json().catch(() => ({}));
-          console.error(
-            "Failed to get Presigned Url:",
-            presignedRespone.status,
-            errorData,
-          );
-          toast.error("Failed to upload file. Please try again");
+          const contentType = presignedRespone.headers.get("content-type");
+          let errorMessage = "Failed to upload file. Please try again";
+
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await presignedRespone.json().catch(() => ({}));
+            errorMessage = errorData.error || errorMessage;
+          }
+
+          if (presignedRespone.status === 401 || presignedRespone.status === 403) {
+            console.warn(
+              "Upload unauthorized:",
+              presignedRespone.status,
+              errorMessage,
+            );
+          } else {
+            console.error(
+              "Failed to get Presigned Url:",
+              presignedRespone.status,
+              presignedRespone.redirected ? "(Redirected)" : "",
+              errorMessage,
+            );
+          }
+
+          if (
+            presignedRespone.status === 401 ||
+            presignedRespone.status === 403
+          ) {
+            toast.error("Unauthorized access. Admin privileges required.");
+          } else {
+            toast.error(errorMessage);
+          }
 
           setFileState((prev) => ({
             ...prev,
