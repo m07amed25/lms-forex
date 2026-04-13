@@ -80,7 +80,7 @@ const Uploader = ({ value, onChange }: UploaderProps) => {
             presignedRespone.status,
             errorData,
           );
-          toast.error("Failed to get Presigned Url");
+          toast.error("Failed to upload file. Please try again");
 
           setFileState((prev) => ({
             ...prev,
@@ -319,8 +319,6 @@ const Uploader = ({ value, onChange }: UploaderProps) => {
     onDropRejected: rejectedFiles,
     disabled: fileState.isUploading,
   });
-
-
 
   return (
     <Card
