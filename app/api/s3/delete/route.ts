@@ -3,6 +3,8 @@ import { S3 } from "@/lib/S3Client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();

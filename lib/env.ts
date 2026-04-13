@@ -30,5 +30,9 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES:
       process.env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
   },
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION ||
+    process.env.NODE_ENV === "test" ||
+    process.env.npm_lifecycle_event === "build",
+  emptyStringAsUndefined: true,
 });
