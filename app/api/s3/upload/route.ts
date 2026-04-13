@@ -5,6 +5,10 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3 } from "@/lib/S3Client";
+import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import ip from "@arcjet/ip";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, "File name is required"),
@@ -13,8 +17,48 @@ export const fileUploadSchema = z.object({
   isImage: z.boolean(),
 });
 
+const aj = arcjet
+  .withRule(
+    detectBot({
+      mode: "LIVE",
+      allow: [],
+    }),
+  )
+  .withRule(
+    fixedWindow({
+      mode: "LIVE",
+      window: "1m",
+      max: 5,
+    }),
+  );
+
 export async function POST(request: Request) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   try {
+    const fingerprint = session?.user?.id || ip(request) || "127.0.0.1";
+    const decision = await aj.protect(request, {
+      fingerprint,
+    });
+
+    console.log("Arcjet Decision:", decision.conclusion, "Rule:", decision.reason);
+
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        return NextResponse.json(
+          { error: "Too many requests. Please try again in a minute." },
+          { status: 429 },
+        );
+      }
+
+      return NextResponse.json(
+        { error: "Access denied. Security rule triggered." },
+        { status: 403 },
+      );
+    }
+
     const body = await request.json();
 
     const validatedBody = fileUploadSchema.safeParse(body);
