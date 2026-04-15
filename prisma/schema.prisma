@@ -92,9 +92,42 @@ model Course {
   userId           String
   duration         Float
   User             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapters         Chapter[]
 
   @@index([userId])
   @@map("course")
+}
+
+model Chapter {
+  id        String   @id @default(uuid())
+  title     String
+  position  Int
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+
+  @@unique([courseId, position])
+  @@index([courseId])
+  @@map("chapter")
+}
+
+model Lesson {
+  id            String   @id @default(uuid())
+  title         String
+  content       String
+  videoFileKey  String?
+  position      Int
+  isFreePreview Boolean  @default(false)
+  chapterId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, position])
+  @@index([chapterId])
+  @@map("lesson")
 }
 
 enum CourseLevel {

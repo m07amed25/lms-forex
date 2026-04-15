@@ -1,4 +1,5 @@
 import adminGetCourse from "@/app/data/admin/admin-get-course";
+import adminGetChapters from "@/app/data/admin/admin-get-chapters";
 import { notFound } from "next/navigation";
 import {
   Breadcrumb,
@@ -18,7 +19,10 @@ type CourseDetailPageProps = {
 
 const CourseDetailPage = async ({ params }: CourseDetailPageProps) => {
   const { courseId } = await params;
-  const course = await adminGetCourse(courseId);
+  const [course, chapters] = await Promise.all([
+    adminGetCourse(courseId),
+    adminGetChapters(courseId),
+  ]);
 
   if (!course) {
     notFound();
@@ -62,7 +66,7 @@ const CourseDetailPage = async ({ params }: CourseDetailPageProps) => {
 
       <Separator />
 
-      <CourseDetailView course={course} />
+      <CourseDetailView course={course} chapters={chapters} />
     </div>
   );
 };

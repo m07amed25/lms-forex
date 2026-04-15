@@ -28,9 +28,11 @@ interface UploaderProps {
   value?: string;
   onChange?: (value: string) => void;
   previewUrl?: string;
+  accept?: Record<string, string[]>;
+  maxSize?: number;
 }
 
-const Uploader = ({ value, onChange, previewUrl }: UploaderProps) => {
+const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: maxSizeProp }: UploaderProps) => {
   const [fileState, setFileState] = useState<UploaderState>({
     id: null,
     file: null,
@@ -285,7 +287,8 @@ const Uploader = ({ value, onChange, previewUrl }: UploaderProps) => {
       }
 
       if (tooLargeFile) {
-        toast.error("File too large, max is 5MB");
+        const maxMB = Math.round(resolvedMaxSize / (1024 * 1024));
+        toast.error(`File too large, max is ${maxMB}MB`);
       }
     }
   }
@@ -333,13 +336,16 @@ const Uploader = ({ value, onChange, previewUrl }: UploaderProps) => {
     return <RenderEmptyState isDragActive={isDragActive} />;
   }
 
+  const defaultAccept = {
+    "image/*": [".png", ".jpg", ".jpeg", ".webp"],
+  };
+  const resolvedMaxSize = maxSizeProp ?? 5 * 1024 * 1024;
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      "image/*": [".png", ".jpg", ".jpeg", ".webp"],
-    },
+    accept: acceptProp ?? defaultAccept,
     maxFiles: 1,
     multiple: false,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: resolvedMaxSize,
     onDrop,
     onDropRejected: rejectedFiles,
     disabled: fileState.isUploading,

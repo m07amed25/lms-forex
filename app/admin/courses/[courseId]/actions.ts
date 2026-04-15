@@ -176,22 +176,47 @@ export async function deleteCourse(courseId: string): Promise<ApiResponse> {
     // Fetch course to get fileKey for S3 cleanup
     const course = await prisma.course.findUnique({
       where: { id: courseId },
-      select: { fileKey: true },
+      select: {
+        fileKey: true,
+        chapters: {
+          select: {
+            lessons: {
+              where: { videoFileKey: { not: null } },
+              select: { videoFileKey: true },
+            },
+          },
+        },
+      },
     });
 
     if (!course) {
       return { status: "error", message: "Course not found" };
     }
 
-    // Delete course record first
+    // Collect all S3 keys for cleanup: course thumbnail + lesson videos
+    const s3Keys: string[] = [];
+    if (course.fileKey) {
+      s3Keys.push(course.fileKey);
+    }
+    for (const chapter of course.chapters) {
+      for (const lesson of chapter.lessons) {
+        if (lesson.videoFileKey) {
+          s3Keys.push(lesson.videoFileKey);
+        }
+      }
+    }
+
+    // Delete course record first (cascades chapters + lessons in DB)
     await prisma.course.delete({
       where: { id: courseId },
     });
 
-    // Clean up S3 thumbnail (fire-and-forget — failure does not block)
-    if (course.fileKey) {
-      cleanupS3Thumbnail(course.fileKey).catch((err) =>
-        console.error("[S3 Delete Cleanup Error]:", err),
+    // Clean up all S3 objects (fire-and-forget)
+    if (s3Keys.length > 0) {
+      Promise.allSettled(
+        s3Keys.map((key) => cleanupS3Thumbnail(key)),
+      ).catch((err) =>
+        console.error("[S3 Cascade Cleanup Error]:", err),
       );
     }
 

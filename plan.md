@@ -15,17 +15,17 @@
 
 ## Project Phase Summary
 
-| Phase | Description                          | Status |
-|------|--------------------------------------|--------|
-| 1    | Foundation & Infrastructure          | ✅ Done |
-| 2    | Authentication & Authorization       | ✅ Done |
-| 3    | Admin Dashboard Shell                | ✅ Done |
-| 4    | Course Creation (Admin)              | ✅ Done |
-| 5    | Course Listing (Admin)               | ✅ Done |
-| 6    | Public Landing Page                  | ✅ Done |
-| 7    | Course Management — Admin CRUD      | ✅ Done |
-| 8    | Chapters & Lessons System            | 🔲 Todo |
-| 9    | Public Course Catalog                | 🔲 Todo |
+| Phase | Description                          | Status  |
+|------|--------------------------------------|---------|
+| 1    | Foundation & Infrastructure          | ✅ Done  |
+| 2    | Authentication & Authorization       | ✅ Done  |
+| 3    | Admin Dashboard Shell                | ✅ Done  |
+| 4    | Course Creation (Admin)              | ✅ Done  |
+| 5    | Course Listing (Admin)               | ✅ Done  |
+| 6    | Public Landing Page                  | ✅ Done  |
+| 7    | Course Management — Admin CRUD      | ✅ Done  |
+| 8    | Chapters & Lessons System            | ✅ Done  |
+| 9    | Public Course Catalog                | ✅ Done  |
 | 10   | Enrollment & Payment                 | 🔲 Todo |
 | 11   | Student Learning Experience          | 🔲 Todo |
 | 12   | User Profile                         | 🔲 Todo |
@@ -104,7 +104,7 @@
 
 ---
 
-# ▶ Active Phase
+#  Active Phase
 
 ## ✅ Phase 7: Course Management — Admin CRUD
 
@@ -117,9 +117,9 @@
 
 ---
 
-# 🔲 Upcoming Phases
+# ✅ Upcoming Phases
 
-## 🔲 Phase 8: Chapters & Lessons System
+## ✅ Phase 8: Chapters & Lessons System
 
 - Chapter & Lesson schemas
 - CRUD operations
@@ -130,7 +130,7 @@
 
 ---
 
-## 🔲 Phase 9: Public Course Catalog
+## ✅ Phase 9: Public Course Catalog
 
 - Browse page `/courses`
 - Course details page

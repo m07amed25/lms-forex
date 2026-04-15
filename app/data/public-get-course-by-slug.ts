@@ -1,21 +1,31 @@
+import "server-only";
+
 import { prisma } from "@/lib/db";
-import { requireAdmin } from "./require-admin";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { S3 } from "@/lib/S3Client";
 import { env } from "@/lib/env";
+import { tiptapJsonToHtml } from "@/lib/tiptap-html";
 
-export default async function adminGetCourse(courseId: string) {
-  await requireAdmin();
-
+export default async function publicGetCourseBySlug(slug: string) {
   const course = await prisma.course.findUnique({
-    where: { id: courseId },
+    where: {
+      slug,
+      isPublished: true,
+      status: "Published",
+    },
     include: {
       chapters: {
         orderBy: { position: "asc" },
         include: {
           lessons: {
             orderBy: { position: "asc" },
+            select: {
+              id: true,
+              title: true,
+              position: true,
+              isFreePreview: true,
+            },
           },
         },
       },
@@ -33,11 +43,12 @@ export default async function adminGetCourse(courseId: string) {
     imageUrl = await getSignedUrl(S3, command, { expiresIn: 3600 });
   }
 
-  return { ...course, imageUrl };
+  const descriptionHtml = tiptapJsonToHtml(course.description);
+
+  return { ...course, imageUrl, descriptionHtml };
 }
 
-export type AdminCourseDetailType = NonNullable<
-  Awaited<ReturnType<typeof adminGetCourse>>
+export type PublicCourseDetailType = NonNullable<
+  Awaited<ReturnType<typeof publicGetCourseBySlug>>
 >;
-
 
