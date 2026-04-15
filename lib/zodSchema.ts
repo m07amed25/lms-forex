@@ -59,3 +59,92 @@ export type UpdateCourseInput = z.input<typeof updateCourseSchema>;
 
 export const COURSES_PAGE_SIZE = 12;
 
+// ─── Chapter Schemas ────────────────────────────────────────
+
+export const createChapterSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(3, { message: "Title must be at least 3 characters" })
+    .max(200, { message: "Title must be at most 200 characters" }),
+  courseId: z.string().uuid({ message: "Valid course ID is required" }),
+});
+
+export type CreateChapterInput = z.infer<typeof createChapterSchema>;
+
+export const updateChapterSchema = z.object({
+  chapterId: z.string().uuid({ message: "Valid chapter ID is required" }),
+  title: z
+    .string()
+    .trim()
+    .min(3, { message: "Title must be at least 3 characters" })
+    .max(200, { message: "Title must be at most 200 characters" }),
+});
+
+export type UpdateChapterInput = z.infer<typeof updateChapterSchema>;
+
+export const reorderChaptersSchema = z.object({
+  courseId: z.string().uuid({ message: "Valid course ID is required" }),
+  items: z.array(
+    z.object({
+      id: z.string().uuid({ message: "Valid item ID is required" }),
+      position: z
+        .number()
+        .int()
+        .min(0, { message: "Position must be >= 0" }),
+    }),
+  ),
+});
+
+export type ReorderChaptersInput = z.infer<typeof reorderChaptersSchema>;
+
+// ─── Lesson Schemas ─────────────────────────────────────────
+
+export const createLessonSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(3, { message: "Title must be at least 3 characters" })
+    .max(200, { message: "Title must be at most 200 characters" }),
+  content: z
+    .string()
+    .min(10, { message: "Content must be at least 10 characters" }),
+  chapterId: z.string().uuid({ message: "Valid chapter ID is required" }),
+  isFreePreview: z.boolean().default(false),
+  videoFileKey: z.string().optional(),
+});
+
+export type CreateLessonInput = z.infer<typeof createLessonSchema>;
+export type CreateLessonFormInput = z.input<typeof createLessonSchema>;
+
+export const updateLessonSchema = z.object({
+  lessonId: z.string().uuid({ message: "Valid lesson ID is required" }),
+  title: z
+    .string()
+    .trim()
+    .min(3, { message: "Title must be at least 3 characters" })
+    .max(200, { message: "Title must be at most 200 characters" }),
+  content: z
+    .string()
+    .min(10, { message: "Content must be at least 10 characters" }),
+  isFreePreview: z.boolean(),
+  videoFileKey: z.string().nullable().optional(),
+});
+
+export type UpdateLessonInput = z.infer<typeof updateLessonSchema>;
+
+export const reorderLessonsSchema = z.object({
+  chapterId: z.string().uuid({ message: "Valid chapter ID is required" }),
+  items: z.array(
+    z.object({
+      id: z.string().uuid({ message: "Valid item ID is required" }),
+      position: z
+        .number()
+        .int()
+        .min(0, { message: "Position must be >= 0" }),
+    }),
+  ),
+});
+
+export type ReorderLessonsInput = z.infer<typeof reorderLessonsSchema>;
+

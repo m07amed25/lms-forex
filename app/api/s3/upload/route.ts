@@ -18,6 +18,20 @@ export const fileUploadSchema = z.object({
   isImage: z.boolean(),
 });
 
+const ALLOWED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpg",
+  "image/jpeg",
+  "image/webp",
+];
+const ALLOWED_VIDEO_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500 MB
+
 const aj = arcjet
   .withRule(
     detectBot({
@@ -78,6 +92,27 @@ export async function POST(request: Request) {
     }
 
     const { fileName, contentType, size } = validatedBody.data;
+
+    // Validate content type
+    const isImage = ALLOWED_IMAGE_TYPES.includes(contentType);
+    const isVideo = ALLOWED_VIDEO_TYPES.includes(contentType);
+
+    if (!isImage && !isVideo) {
+      return NextResponse.json(
+        { error: "Unsupported file type. Allowed: images (PNG, JPG, WebP) and videos (MP4, WebM, MOV)." },
+        { status: 400 },
+      );
+    }
+
+    // Validate size based on type
+    const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+    if (size > maxSize) {
+      const maxMB = Math.round(maxSize / (1024 * 1024));
+      return NextResponse.json(
+        { error: `File too large. Maximum size for ${isVideo ? "videos" : "images"} is ${maxMB} MB.` },
+        { status: 400 },
+      );
+    }
 
     const uniqueKey = `${uuidv4()}-${fileName}`;
 

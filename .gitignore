@@ -48,6 +48,6 @@ next-env.d.ts
 cons.md
 Phases.md
 
-specs
 .specify
 .github
+/specs

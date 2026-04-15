@@ -12,6 +12,10 @@ import {
   Calendar,
   RefreshCw,
 } from "lucide-react";
+import ChapterList from "./ChapterList";
+import CreateChapterDialog from "./CreateChapterDialog";
+import CourseOutline from "./CourseOutline";
+import type { AdminChaptersType } from "@/app/data/admin/admin-get-chapters";
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -38,7 +42,13 @@ function getStatusVariant(
   }
 }
 
-const CourseDetailView = ({ course }: { course: AdminCourseDetailType }) => {
+const CourseDetailView = ({
+  course,
+  chapters,
+}: {
+  course: AdminCourseDetailType;
+  chapters: AdminChaptersType;
+}) => {
   return (
     <div className="flex flex-col gap-6">
       {/* Thumbnail */}
@@ -135,6 +145,20 @@ const CourseDetailView = ({ course }: { course: AdminCourseDetailType }) => {
               __html: tiptapJsonToHtml(course.description),
             }}
           />
+        </CardContent>
+      </Card>
+
+      {/* Course Outline Overview */}
+      <CourseOutline course={course} />
+
+      {/* Chapters */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardTitle>Chapters</CardTitle>
+          <CreateChapterDialog courseId={course.id} />
+        </CardHeader>
+        <CardContent>
+          <ChapterList initialChapters={chapters} courseId={course.id} />
         </CardContent>
       </Card>
     </div>
