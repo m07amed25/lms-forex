@@ -25,7 +25,7 @@
 | 6    | Public Landing Page                  | ✅ Done  |
 | 7    | Course Management — Admin CRUD      | ✅ Done  |
 | 8    | Chapters & Lessons System            | ✅ Done  |
-| 9    | Public Course Catalog                | 🔲 Todo |
+| 9    | Public Course Catalog                | ✅ Done  |
 | 10   | Enrollment & Payment                 | 🔲 Todo |
 | 11   | Student Learning Experience          | 🔲 Todo |
 | 12   | User Profile                         | 🔲 Todo |
@@ -130,7 +130,7 @@
 
 ---
 
-## 🔲 Phase 9: Public Course Catalog
+## ✅ Phase 9: Public Course Catalog
 
 - Browse page `/courses`
 - Course details page
