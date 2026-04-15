@@ -10,6 +10,16 @@ export default async function adminGetCourse(courseId: string) {
 
   const course = await prisma.course.findUnique({
     where: { id: courseId },
+    include: {
+      chapters: {
+        orderBy: { position: "asc" },
+        include: {
+          lessons: {
+            orderBy: { position: "asc" },
+          },
+        },
+      },
+    },
   });
 
   if (!course) return null;
