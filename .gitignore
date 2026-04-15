@@ -44,3 +44,9 @@ next-env.d.ts
 
 /lib/generated/prisma
 .specify/
+cons.md
+Phases.md
+
+specs
+.specify
+.github

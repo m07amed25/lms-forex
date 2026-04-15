@@ -49,3 +49,13 @@ export const createCourseSchema = z.object({
 
 export type CreateCourseSchema = z.infer<typeof createCourseSchema>;
 export type CreateCourseInput = z.input<typeof createCourseSchema>;
+
+export const updateCourseSchema = createCourseSchema.extend({
+  courseId: z.string().uuid({ message: "Valid course ID is required" }),
+});
+
+export type UpdateCourseSchema = z.infer<typeof updateCourseSchema>;
+export type UpdateCourseInput = z.input<typeof updateCourseSchema>;
+
+export const COURSES_PAGE_SIZE = 12;
+
