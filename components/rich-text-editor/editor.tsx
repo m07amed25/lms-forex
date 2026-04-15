@@ -11,12 +11,27 @@ import Superscript from "@tiptap/extension-superscript";
 import Subscript from "@tiptap/extension-subscript";
 import { Menubar } from "./Menubar";
 import type { ControllerRenderProps } from "react-hook-form";
+import type { Content } from "@tiptap/core";
 
 interface RichTextEditorProps {
   content?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
   field?: ControllerRenderProps;
+}
+
+/**
+ * Parse a content string for Tiptap. If it's valid JSON (stored from
+ * `editor.getJSON()`), return the parsed object. Otherwise return the
+ * raw string so Tiptap treats it as HTML.
+ */
+function parseContent(value: string): Content {
+  if (!value) return "";
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
 }
 
 export function RichTextEditor({
@@ -55,7 +70,7 @@ export function RichTextEditor({
       Superscript,
       Subscript,
     ],
-    content: field?.value || content,
+    content: parseContent(field?.value || content),
     editorProps: {
       attributes: {
         class: "min-h-[300px] p-4 focus:outline-none",

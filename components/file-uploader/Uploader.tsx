@@ -27,9 +27,10 @@ interface UploaderState {
 interface UploaderProps {
   value?: string;
   onChange?: (value: string) => void;
+  previewUrl?: string;
 }
 
-const Uploader = ({ value, onChange }: UploaderProps) => {
+const Uploader = ({ value, onChange, previewUrl }: UploaderProps) => {
   const [fileState, setFileState] = useState<UploaderState>({
     id: null,
     file: null,
