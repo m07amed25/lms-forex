@@ -9,6 +9,7 @@ import RenderEmptyState, {
   RenderUploadedState,
   RenderUploadingState,
 } from "./RenderState";
+import ImageCropper from "./ImageCropper";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -43,6 +44,10 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
     fileType: "image",
     key: value,
   });
+
+  // Cropping state
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   useEffect(() => {
     return () => {
@@ -255,6 +260,15 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
           URL.revokeObjectURL(fileState.objectUrl);
         }
 
+        // For images, show cropper first
+        if (file.type.startsWith("image/")) {
+          const objectUrl = URL.createObjectURL(file);
+          setPendingFile(file);
+          setCropSrc(objectUrl);
+          return;
+        }
+
+        // For videos, upload directly
         setFileState({
           file: file,
           isUploading: false,
@@ -262,7 +276,7 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
           objectUrl: URL.createObjectURL(file),
           id: uuidv4(),
           isDeleting: false,
-          fileType: file.type.startsWith("video") ? "video" : "image",
+          fileType: "video",
           error: false,
         });
 
@@ -271,6 +285,42 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
     },
     [fileState.objectUrl, uploadFile],
   );
+
+  const handleCropComplete = useCallback(
+    (croppedBlob: Blob) => {
+      // Clean up crop source
+      if (cropSrc) URL.revokeObjectURL(cropSrc);
+      setCropSrc(null);
+
+      const croppedFile = new File(
+        [croppedBlob],
+        pendingFile?.name?.replace(/\.[^.]+$/, ".webp") || "cropped.webp",
+        { type: "image/webp" },
+      );
+
+      setPendingFile(null);
+
+      setFileState({
+        file: croppedFile,
+        isUploading: false,
+        progress: 0,
+        objectUrl: URL.createObjectURL(croppedBlob),
+        id: uuidv4(),
+        isDeleting: false,
+        fileType: "image",
+        error: false,
+      });
+
+      uploadFile(croppedFile);
+    },
+    [cropSrc, pendingFile, uploadFile],
+  );
+
+  const handleCropCancel = useCallback(() => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+    setPendingFile(null);
+  }, [cropSrc]);
 
   function rejectedFiles(fileRejection: FileRejection[]) {
     if (fileRejection.length) {
@@ -294,6 +344,18 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
   }
 
   function renderContent() {
+    // Show cropper when an image is pending crop
+    if (cropSrc) {
+      return (
+        <ImageCropper
+          imageSrc={cropSrc}
+          aspect={16 / 9}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      );
+    }
+
     if (fileState.isUploading) {
       return (
         <RenderUploadingState
@@ -348,7 +410,9 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
     maxSize: resolvedMaxSize,
     onDrop,
     onDropRejected: rejectedFiles,
-    disabled: fileState.isUploading,
+    disabled: fileState.isUploading || !!cropSrc,
+    noClick: !!cropSrc,
+    noDrag: !!cropSrc,
   });
 
   return (
@@ -360,6 +424,7 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
           : "border-border hover:border-primary",
         "cursor-pointer",
         (fileState.objectUrl || value) && "border-solid border-primary/50",
+        cropSrc && "border-solid border-primary cursor-default",
         fileState.isUploading &&
           "opacity-50 cursor-not-allowed pointer-events-none",
       )}

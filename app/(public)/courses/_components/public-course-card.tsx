@@ -23,7 +23,7 @@ export default function PublicCourseCard({
 
   return (
     <Link href={`/courses/${course.slug}`} className="group">
-      <Card className="h-full overflow-hidden rounded-2xl border-border/50 bg-card/30 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
+      <Card className="h-full overflow-hidden rounded-2xl border-border/50 bg-card/30 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 pt-0">
         {/* Image */}
         <div className="relative aspect-video w-full overflow-hidden bg-muted">
           {!imgError && course.imageUrl ? (
@@ -83,4 +83,3 @@ export default function PublicCourseCard({
     </Link>
   );
 }
-

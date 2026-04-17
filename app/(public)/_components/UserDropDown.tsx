@@ -7,9 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Mail,
-  Settings,
   ShieldCheck,
-  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 

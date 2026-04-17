@@ -62,7 +62,7 @@ const Navbar = () => {
 
         {/* Desktop */}
         <nav className="hidden md:flex md:flex-1 md:items-center md:justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -175,7 +175,8 @@ const Navbar = () => {
                       href={"/login"}
                       className={buttonVariants({
                         variant: "outline",
-                        className: "w-full justify-center text-base py-6 rounded-xl",
+                        className:
+                          "w-full justify-center text-base py-6 rounded-xl",
                       })}
                     >
                       Log in

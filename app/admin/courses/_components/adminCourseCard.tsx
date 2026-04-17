@@ -22,7 +22,7 @@ function getStatusVariant(
 
 const AdminCourseCard = ({ course }: { course: AdminCourseType }) => {
   return (
-    <Card className="group relative overflow-hidden">
+    <Card className="group relative overflow-hidden pt-0">
       <div>
         <div className="relative">
           <Image
@@ -35,7 +35,10 @@ const AdminCourseCard = ({ course }: { course: AdminCourseType }) => {
           />
           {/* Status badge overlay on thumbnail */}
           <div className="absolute top-2 right-2 flex gap-1">
-            <Badge variant={getStatusVariant(course.status)} className="text-xs">
+            <Badge
+              variant={getStatusVariant(course.status)}
+              className="text-xs"
+            >
               {course.status}
             </Badge>
             {course.isPublished && (

@@ -88,10 +88,7 @@ export const reorderChaptersSchema = z.object({
   items: z.array(
     z.object({
       id: z.string().uuid({ message: "Valid item ID is required" }),
-      position: z
-        .number()
-        .int()
-        .min(0, { message: "Position must be >= 0" }),
+      position: z.number().int().min(0, { message: "Position must be >= 0" }),
     }),
   ),
 });
@@ -138,13 +135,9 @@ export const reorderLessonsSchema = z.object({
   items: z.array(
     z.object({
       id: z.string().uuid({ message: "Valid item ID is required" }),
-      position: z
-        .number()
-        .int()
-        .min(0, { message: "Position must be >= 0" }),
+      position: z.number().int().min(0, { message: "Position must be >= 0" }),
     }),
   ),
 });
 
 export type ReorderLessonsInput = z.infer<typeof reorderLessonsSchema>;
-
