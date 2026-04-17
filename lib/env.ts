@@ -27,7 +27,7 @@ export const env = createEnv({
     AWS_REGION: optionalString,
   },
   client: {
-    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: requiredString,
+    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: optionalString,
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES:
