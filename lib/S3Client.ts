@@ -13,7 +13,11 @@ const s3Credentials =
 
 const isS3Configured = Boolean(env.AWS_ENDPOINT_URL_S3 && s3Credentials);
 
-if (!isS3Configured && process.env.NODE_ENV !== "test") {
+const isBuild =
+  process.env.npm_lifecycle_event === "build" ||
+  process.env.NEXT_PHASE === "phase-production-build";
+
+if (!isS3Configured && process.env.NODE_ENV !== "test" && !isBuild) {
   console.warn(
     "[S3] AWS S3 env vars are missing. S3 operations will fail until configured.",
   );

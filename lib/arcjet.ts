@@ -55,7 +55,11 @@ const arcjetClient: ArcjetClient = env.ARCJET_KEY
   ? createArcjetClient(env.ARCJET_KEY)
   : (noopArcjet as unknown as ArcjetClient);
 
-if (!env.ARCJET_KEY && process.env.NODE_ENV !== "test") {
+const isBuild =
+  process.env.npm_lifecycle_event === "build" ||
+  process.env.NEXT_PHASE === "phase-production-build";
+
+if (!env.ARCJET_KEY && process.env.NODE_ENV !== "test" && !isBuild) {
   console.warn("[Arcjet] ARCJET_KEY is missing. Arcjet checks are disabled.");
 }
 
