@@ -27,11 +27,8 @@ export const S3 = new S3Client({
   region: env.AWS_REGION ?? "auto",
   endpoint: env.AWS_ENDPOINT_URL_S3 ?? "https://invalid-s3-endpoint.local",
   forcePathStyle: false,
-  credentials:
-    s3Credentials ??
-    (async () => {
-      throw new Error(
-        "Missing S3 configuration. Set AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
-      );
-    }),
+  credentials: s3Credentials ?? {
+    accessKeyId: "not-configured",
+    secretAccessKey: "not-configured",
+  },
 });
