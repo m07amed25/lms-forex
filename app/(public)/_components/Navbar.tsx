@@ -3,8 +3,11 @@
 import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useMemo, useState } from "react";
 import { UserMenu } from "./UserDropDown";
 import {
   Sheet,
@@ -16,61 +19,161 @@ import {
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
-const navItems = [
+type NavItem = {
+  name: string;
+  href: string;
+  match?: "exact" | "prefix";
+  requiresAuth?: boolean;
+};
+
+const navItems: NavItem[] = [
   {
     name: "Home",
     href: "/",
+    match: "exact",
   },
   {
     name: "Courses",
     href: "/courses",
+    match: "prefix",
   },
   {
     name: "Dashboard",
     href: "/dashboard",
+    match: "prefix",
+    requiresAuth: true,
   },
 ];
 
+function Brand({
+  compact = false,
+  onClick,
+}: {
+  compact?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      className="group flex items-center gap-2.5 transition-all hover:opacity-90"
+      href="/"
+      onClick={onClick}
+    >
+      <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 shadow-sm ring-1 ring-primary/20 transition-all group-hover:scale-105 group-hover:bg-primary/20 group-hover:ring-primary/30">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={24}
+          height={24}
+          className="object-contain drop-shadow-sm"
+          priority
+        />
+      </div>
+      <span
+        className={cn(
+          "font-bold tracking-tight text-foreground/90",
+          compact ? "text-lg" : "text-xl"
+        )}
+      >
+        Forex<span className="text-foreground">With</span>
+        <span className="mx-0.5 text-primary">.</span>
+        <span className="bg-linear-to-tr from-primary to-primary/60 bg-clip-text font-extrabold text-transparent">
+          Salma
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+function DesktopNavLink({
+  item,
+  active,
+}: {
+  item: NavItem;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "relative px-1 py-1 text-sm font-medium transition-colors hover:text-primary",
+        active ? "text-primary" : "text-foreground/80"
+      )}
+    >
+      {item.name}
+      <span
+        className={cn(
+          "absolute -bottom-0.5 left-0 h-0.5 w-full origin-left rounded-full bg-primary transition-transform duration-200",
+          active ? "scale-x-100" : "scale-x-0"
+        )}
+      />
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  item,
+  active,
+  onClick,
+}: {
+  item: NavItem;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      onClick={onClick}
+      className={cn(
+        "group flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium transition-all active:scale-[0.98]",
+        active
+          ? "bg-primary/10 text-primary"
+          : "hover:bg-primary/5 hover:text-primary"
+      )}
+    >
+      <span className="flex-1">{item.name}</span>
+      <div
+        className={cn(
+          "size-1.5 rounded-full bg-primary transition-opacity",
+          active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        )}
+      />
+    </Link>
+  );
+}
+
 const Navbar = () => {
   const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const visibleNavItems = useMemo(
+    () => navItems.filter((item) => !item.requiresAuth || Boolean(session)),
+    [session]
+  );
+
+  const isActiveLink = (item: NavItem) => {
+    if (!pathname) return false;
+    if (item.match === "exact") return pathname === item.href;
+
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex min-h-16 gap-10 items-center px-4 md:px-6 lg:px-8">
-        <Link
-          className="group flex items-center gap-2.5 transition-all hover:opacity-90"
-          href="/"
-        >
-          <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 shadow-sm ring-1 ring-primary/20 transition-all group-hover:bg-primary/20 group-hover:ring-primary/30 group-hover:scale-105">
-            <Image
-              src="/logo.png"
-              alt="logo"
-              width={24}
-              height={24}
-              className="object-contain drop-shadow-sm"
-              priority
-            />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground/90">
-            Forex<span className="text-foreground">With</span>
-            <span className="mx-[2px] text-primary">.</span>
-            <span className="bg-linear-to-tr from-primary to-primary/60 bg-clip-text font-extrabold text-transparent">
-              Salma
-            </span>
-          </span>
-        </Link>
+        <Brand />
 
         {/* Desktop */}
         <nav className="hidden md:flex md:flex-1 md:items-center md:justify-between">
           <div className="flex items-center space-x-6">
-            {navItems.map((item) => (
-              <Link
+            {visibleNavItems.map((item) => (
+              <DesktopNavLink
                 key={item.name}
-                href={item.href}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                {item.name}
-              </Link>
+                item={item}
+                active={isActiveLink(item)}
+              />
             ))}
           </div>
 
@@ -102,9 +205,9 @@ const Navbar = () => {
           </div>
         </nav>
 
-        <div className="flex md:hidden flex-1 items-center justify-end gap-3">
+        <div className="flex flex-1 items-center justify-end gap-3 md:hidden">
           <ThemeToggle />
-          <Sheet>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger
               render={
                 <Button variant="outline" size="icon" className="shrink-0">
@@ -120,36 +223,17 @@ const Navbar = () => {
               <div className="flex flex-col gap-0">
                 <SheetHeader className="p-6 border-b bg-muted/30">
                   <SheetTitle>
-                    <Link className="flex items-center gap-2.5" href="/">
-                      <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 shadow-sm ring-1 ring-primary/20">
-                        <Image
-                          src="/logo.png"
-                          alt="logo"
-                          width={24}
-                          height={24}
-                          className="object-contain"
-                        />
-                      </div>
-                      <span className="text-xl font-bold tracking-tight text-foreground/90">
-                        Forex<span className="text-foreground">With</span>
-                        <span className="mx-[2px] text-primary">.</span>
-                        <span className="bg-linear-to-tr from-primary to-primary/60 bg-clip-text font-extrabold text-transparent">
-                          Salma
-                        </span>
-                      </span>
-                    </Link>
+                    <Brand compact onClick={() => setMobileMenuOpen(false)} />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col p-6 space-y-1">
-                  {navItems.map((item) => (
-                    <Link
+                  {visibleNavItems.map((item) => (
+                    <MobileNavLink
                       key={item.name}
-                      href={item.href}
-                      className="group flex items-center gap-3 rounded-lg px-3 py-3 text-base font-medium transition-all hover:bg-primary/5 hover:text-primary active:scale-[0.98]"
-                    >
-                      <span className="flex-1">{item.name}</span>
-                      <div className="size-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
+                      item={item}
+                      active={isActiveLink(item)}
+                      onClick={() => setMobileMenuOpen(false)}
+                    />
                   ))}
                 </nav>
               </div>
@@ -161,10 +245,10 @@ const Navbar = () => {
                       <UserMenu user={session.user} />
                       <div className="flex flex-col overflow-hidden">
                         <span className="text-sm font-semibold truncate">
-                          {session.user.name}
+                          {session.user.name || "User"}
                         </span>
                         <span className="text-xs text-muted-foreground truncate">
-                          {session.user.email}
+                          {session.user.email || "No email"}
                         </span>
                       </div>
                     </div>
@@ -173,6 +257,7 @@ const Navbar = () => {
                   <div className="flex flex-col gap-3">
                     <Link
                       href={"/login"}
+                      onClick={() => setMobileMenuOpen(false)}
                       className={buttonVariants({
                         variant: "outline",
                         className:
@@ -183,6 +268,7 @@ const Navbar = () => {
                     </Link>
                     <Link
                       href={"/login"}
+                      onClick={() => setMobileMenuOpen(false)}
                       className={buttonVariants({
                         variant: "default",
                         className:
