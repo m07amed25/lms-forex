@@ -9,7 +9,13 @@ export async function getAdmin() {
     headers: await headers(),
   });
 
-  if (!session || session.user.role !== "admin") {
+  if (!session) {
+    return null;
+  }
+
+  // Check if user has admin role - adjust property access based on your auth schema
+  const userRole = (session.user as { role?: string }).role;
+  if (userRole !== "admin") {
     return null;
   }
 
@@ -28,8 +34,9 @@ export async function requireAdmin() {
       redirect("/login");
     }
 
+    const userRole = (session.user as { role?: string }).role;
     console.warn(
-      `[requireAdmin] User ${session.user.id} attempted admin access with role: ${session.user.role}`,
+      `[requireAdmin] User ${session.user.id} attempted admin access with role: ${userRole}`,
     );
     redirect("/unauthorized");
   }

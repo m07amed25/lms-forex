@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Mail,
+  Settings,
   ShieldCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -38,6 +39,7 @@ interface SessionUser {
   name: string;
   email: string;
   image?: string | null;
+  role?: string | null;
 }
 
 export function UserMenu({ user }: { user: SessionUser }) {
@@ -49,10 +51,13 @@ export function UserMenu({ user }: { user: SessionUser }) {
 
   const initials = user.email?.charAt(0).toUpperCase() || "U";
 
+  const isAdmin = user.role === "admin";
+
   const menuItems: MenuItem[] = [
     { label: "Home", icon: Home, href: "/" },
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     { label: "Courses", icon: BookOpen, href: "/courses" },
+    ...(isAdmin ? [{ label: "Admin", icon: Settings, href: "/admin" }] : []),
   ];
 
   return (

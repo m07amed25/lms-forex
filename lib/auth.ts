@@ -3,12 +3,20 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { env } from "./env";
 import { emailOTP } from "better-auth/plugins";
-import { transporter } from "./email";
+import { hasSmtpConfig, transporter } from "./email";
 import { render } from "@react-email/components";
 import { OTPEmail } from "@/components/emails/otp-template";
 import { LoginNotificationEmail } from "@/components/emails/login-notification";
 import React from "react";
 import { admin } from "better-auth/plugins";
+
+const githubProvider =
+  env.GITHUB_ID && env.GITHUB_SECRET
+    ? {
+        clientId: env.GITHUB_ID,
+        clientSecret: env.GITHUB_SECRET,
+      }
+    : null;
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -17,33 +25,46 @@ export const auth = betterAuth({
   logger: {
     level: "debug",
   },
-  socialProviders: {
-    github: {
-      clientId: env.GITHUB_ID,
-      clientSecret: env.GITHUB_SECRET,
-    },
-  },
+  ...(githubProvider
+    ? {
+        socialProviders: {
+          github: githubProvider,
+        },
+      }
+    : {}),
   plugins: [
-    emailOTP({
-      async sendVerificationOTP({ email, otp }) {
-        const html = await render(
-          React.createElement(OTPEmail, { otpCode: otp }),
-        );
+    ...(hasSmtpConfig
+      ? [
+          emailOTP({
+            async sendVerificationOTP({ email, otp }) {
+              if (!transporter) {
+                throw new Error("SMTP provider is not configured");
+              }
 
-        await transporter.sendMail({
-          from: env.SMTP_FROM,
-          to: email,
-          subject: "Verification Code",
-          html,
-        });
-      },
-    }),
+              const html = await render(
+                React.createElement(OTPEmail, { otpCode: otp }),
+              );
+
+              await transporter.sendMail({
+                from: env.SMTP_FROM,
+                to: email,
+                subject: "Verification Code",
+                html,
+              });
+            },
+          }),
+        ]
+      : []),
     admin(),
   ],
   databaseHooks: {
     session: {
       create: {
         after: async (session) => {
+          if (!transporter) {
+            return;
+          }
+
           console.log(`[Auth Hook] Session created for user ${session.userId}`);
 
           // Get user details
@@ -51,7 +72,7 @@ export const auth = betterAuth({
             where: { id: session.userId },
           });
 
-          if (!user) {
+          if (!user || !user.email) {
             console.error(
               `[Auth Hook] User not found for session ${session.userId}`,
             );
@@ -77,7 +98,7 @@ export const auth = betterAuth({
 
             const info = await transporter.sendMail({
               from: env.SMTP_FROM,
-              to: user.email || "",
+              to: user.email,
               subject: "New Login Detected - ForexWith.Salma",
               html,
             });

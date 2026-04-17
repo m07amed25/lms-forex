@@ -1,30 +1,33 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import * as z from "zod";
 
+const requiredString = z.string().min(1);
+const optionalString = requiredString.optional();
+
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
-    BETTER_AUTH_SECRET: z.string().min(1),
+    BETTER_AUTH_SECRET: requiredString,
     BETTER_AUTH_URL: z.string().url(),
-    GITHUB_ID: z.string().min(1),
-    GITHUB_SECRET: z.string().min(1),
-    RESEND_API_KEY: z.string().min(1),
-    SMTP_HOST: z.string().min(1),
-    SMTP_PORT: z.coerce.number(),
-    SMTP_USER: z.string().min(1),
-    SMTP_PASS: z.string().min(1),
-    SMTP_FROM: z.string().min(1),
-    SMTP_FROM_NAME: z.string().min(1),
-    ARCJET_KEY: z.string().min(1),
-    ARCJET_ENV: z.string().min(1),
-    AWS_ACCESS_KEY_ID: z.string().min(1),
-    AWS_SECRET_ACCESS_KEY: z.string().min(1),
-    AWS_ENDPOINT_URL_S3: z.string().url(),
-    AWS_ENDPOINT_URL_IAM: z.string().url(),
-    AWS_REGION: z.string().min(1),
+    GITHUB_ID: optionalString,
+    GITHUB_SECRET: optionalString,
+    RESEND_API_KEY: optionalString,
+    SMTP_HOST: optionalString,
+    SMTP_PORT: z.coerce.number().optional(),
+    SMTP_USER: optionalString,
+    SMTP_PASS: optionalString,
+    SMTP_FROM: optionalString,
+    SMTP_FROM_NAME: optionalString,
+    ARCJET_KEY: optionalString,
+    ARCJET_ENV: optionalString,
+    AWS_ACCESS_KEY_ID: optionalString,
+    AWS_SECRET_ACCESS_KEY: optionalString,
+    AWS_ENDPOINT_URL_S3: z.string().url().optional(),
+    AWS_ENDPOINT_URL_IAM: z.string().url().optional(),
+    AWS_REGION: optionalString,
   },
   client: {
-    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: z.string().min(1),
+    NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: requiredString,
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES:

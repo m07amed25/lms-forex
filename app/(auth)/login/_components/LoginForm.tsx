@@ -17,12 +17,18 @@ import { useEffect, useState, useTransition } from "react";
 import { LuGithub } from "react-icons/lu";
 import { toast } from "sonner";
 
-const LoginForm = () => {
+type LoginFormProps = {
+  allowGithub: boolean;
+  allowEmailOtp: boolean;
+};
+
+const LoginForm = ({ allowGithub, allowEmailOtp }: LoginFormProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [githubPending, startGithubTranstion] = useTransition();
   const [emailPending, startEmailTranstion] = useTransition();
   const [email, setEmail] = useState("");
+  const hasAnyProvider = allowGithub || allowEmailOtp;
 
   useEffect(() => {
     const verified = searchParams.get("verified");
@@ -34,6 +40,11 @@ const LoginForm = () => {
   }, [searchParams]);
 
   async function SignInWithGithub() {
+    if (!allowGithub) {
+      toast.error("Github login is not available.");
+      return;
+    }
+
     startGithubTranstion(async () => {
       await authClient.signIn.social({
         provider: "github",
@@ -52,6 +63,11 @@ const LoginForm = () => {
 
   async function SignInWithEmail(e?: React.FormEvent) {
     if (e) e.preventDefault();
+
+    if (!allowEmailOtp) {
+      toast.error("Email login is not available.");
+      return;
+    }
 
     startEmailTranstion(async () => {
       await authClient.emailOtp.sendVerificationOtp({
@@ -77,71 +93,90 @@ const LoginForm = () => {
           Welcome back
         </CardTitle>
         <CardDescription>
-          Sign in to your account with Github or Email
+          {hasAnyProvider
+            ? `Sign in to your account with ${[
+                allowGithub ? "Github" : null,
+                allowEmailOtp ? "Email" : null,
+              ]
+                .filter(Boolean)
+                .join(" or ")}`
+            : "Login is temporarily unavailable. Please contact support."}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4">
-        <Button
-          type="button"
-          className="w-full active:scale-[0.98] transition-all duration-200 group relative"
-          variant={"outline"}
-          disabled={githubPending || emailPending}
-          onClick={SignInWithGithub}
-        >
-          {githubPending ? (
-            <>
-              <Loader className="mr-2 h-4 w-4 animate-spin" />
-              Signing in with Github...
-            </>
-          ) : (
-            <>
-              <LuGithub className="mr-2 h-4 w-4" />
-              Sign in with Github
-            </>
-          )}
-        </Button>
-
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-card px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-
-        <form onSubmit={SignInWithEmail} className="grid gap-4">
-          <div className="grid gap-2 text-left">
-            <Label htmlFor="email" className="text-sm font-medium">
-              Email address
-            </Label>
-            <Input
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder="m@example.com"
-              required
-              disabled={emailPending || githubPending}
-              className="transition-all duration-200 focus-visible:ring-primary/20 focus-visible:border-primary bg-background/50 hover:bg-background"
-            />
-          </div>
+        {allowGithub && (
           <Button
-            type="submit"
-            disabled={emailPending || githubPending}
-            className="mt-1 active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow"
+            type="button"
+            className="w-full active:scale-[0.98] transition-all duration-200 group relative"
+            variant={"outline"}
+            disabled={githubPending || emailPending}
+            onClick={SignInWithGithub}
           >
-            {emailPending ? (
+            {githubPending ? (
               <>
                 <Loader className="mr-2 h-4 w-4 animate-spin" />
-                Sending Email...
+                Signing in with Github...
               </>
             ) : (
               <>
-                <Send className="size-4" />
-                <span>Continue with Email</span>
+                <LuGithub className="mr-2 h-4 w-4" />
+                Sign in with Github
               </>
             )}
           </Button>
-        </form>
+        )}
+
+        {allowGithub && allowEmailOtp && (
+          <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+            <span className="relative z-10 bg-card px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        )}
+
+        {allowEmailOtp && (
+          <form onSubmit={SignInWithEmail} className="grid gap-4">
+            <div className="grid gap-2 text-left">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email address
+              </Label>
+              <Input
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="m@example.com"
+                required
+                disabled={emailPending || githubPending}
+                className="transition-all duration-200 focus-visible:ring-primary/20 focus-visible:border-primary bg-background/50 hover:bg-background"
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={emailPending || githubPending}
+              className="mt-1 active:scale-[0.98] transition-all duration-200 shadow-sm hover:shadow"
+            >
+              {emailPending ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Sending Email...
+                </>
+              ) : (
+                <>
+                  <Send className="size-4" />
+                  <span>Continue with Email</span>
+                </>
+              )}
+            </Button>
+          </form>
+        )}
+
+        {!hasAnyProvider && (
+          <p className="rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+            Login providers are not configured in this environment.
+          </p>
+        )}
       </CardContent>
     </Card>
   );

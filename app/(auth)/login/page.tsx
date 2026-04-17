@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import LoginForm from "./_components/LoginForm";
@@ -7,6 +8,15 @@ import { Suspense } from "react";
 import { Loader } from "lucide-react";
 
 const LogIn = async () => {
+  const hasGithubProvider = Boolean(env.GITHUB_ID && env.GITHUB_SECRET);
+  const hasEmailProvider = Boolean(
+    env.SMTP_HOST &&
+      env.SMTP_PORT &&
+      env.SMTP_USER &&
+      env.SMTP_PASS &&
+      env.SMTP_FROM,
+  );
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -23,7 +33,10 @@ const LogIn = async () => {
         </div>
       }
     >
-      <LoginForm />
+      <LoginForm
+        allowGithub={hasGithubProvider}
+        allowEmailOtp={hasEmailProvider}
+      />
     </Suspense>
   );
 };

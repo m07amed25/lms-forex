@@ -24,6 +24,7 @@ type NavItem = {
   href: string;
   match?: "exact" | "prefix";
   requiresAuth?: boolean;
+  requiresAdmin?: boolean;
 };
 
 const navItems: NavItem[] = [
@@ -42,6 +43,13 @@ const navItems: NavItem[] = [
     href: "/dashboard",
     match: "prefix",
     requiresAuth: true,
+  },
+  {
+    name: "Admin",
+    href: "/admin",
+    match: "prefix",
+    requiresAuth: true,
+    requiresAdmin: true,
   },
 ];
 
@@ -148,9 +156,16 @@ const Navbar = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isAdmin = (session?.user as { role?: string })?.role === "admin";
+
   const visibleNavItems = useMemo(
-    () => navItems.filter((item) => !item.requiresAuth || Boolean(session)),
-    [session]
+    () =>
+      navItems.filter(
+        (item) =>
+          (!item.requiresAuth || Boolean(session)) &&
+          (!item.requiresAdmin || isAdmin)
+      ),
+    [session, isAdmin]
   );
 
   const isActiveLink = (item: NavItem) => {
