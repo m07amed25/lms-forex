@@ -90,7 +90,7 @@ export async function createPaymentIntention(
   const firstName = nameParts[0] || "Learner";
   const lastName = nameParts.slice(1).join(" ") || "NA";
 
-  const baseUrl = env.BETTER_AUTH_URL;
+  const baseUrl = env.NEXT_PUBLIC_APP_URL || env.BETTER_AUTH_URL;
 
   const { data: intention, error } = await tryCatch(
     createIntention({

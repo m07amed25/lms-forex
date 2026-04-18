@@ -33,10 +33,12 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: optionalString,
+    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES:
       process.env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION ||
