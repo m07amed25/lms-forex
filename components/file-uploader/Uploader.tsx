@@ -33,16 +33,25 @@ interface UploaderProps {
   maxSize?: number;
 }
 
-const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: maxSizeProp }: UploaderProps) => {
-  const [fileState, setFileState] = useState<UploaderState>({
-    id: null,
-    file: null,
-    isUploading: false,
-    progress: 0,
-    isDeleting: false,
-    error: false,
-    fileType: "image",
-    key: value,
+const Uploader = ({
+  value,
+  onChange,
+  previewUrl,
+  accept: acceptProp,
+  maxSize: maxSizeProp,
+}: UploaderProps) => {
+  const [fileState, setFileState] = useState<UploaderState>(() => {
+    const isVideo = value ? /\.(mp4|webm|mov)$/i.test(value) : false;
+    return {
+      id: null,
+      file: null,
+      isUploading: false,
+      progress: 0,
+      isDeleting: false,
+      error: false,
+      fileType: isVideo ? "video" : "image",
+      key: value,
+    };
   });
 
   // Cropping state
@@ -90,7 +99,10 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
             errorMessage = errorData.error || errorMessage;
           }
 
-          if (presignedRespone.status === 401 || presignedRespone.status === 403) {
+          if (
+            presignedRespone.status === 401 ||
+            presignedRespone.status === 403
+          ) {
             console.warn(
               "Upload unauthorized:",
               presignedRespone.status,
@@ -384,6 +396,7 @@ const Uploader = ({ value, onChange, previewUrl, accept: acceptProp, maxSize: ma
         <RenderUploadedState
           previewUrl={
             fileState.objectUrl ||
+            previewUrl ||
             `https://salma-forex-lms.t3.storage.dev/${value}`
           }
           fileType={fileState.fileType}

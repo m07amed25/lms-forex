@@ -274,6 +274,7 @@ const EditCourseForm = ({ course }: EditCourseFormProps) => {
                       <Uploader
                         value={field.value}
                         onChange={field.onChange}
+                        previewUrl={course.imageUrl}
                       />
                     </FormControl>
                     <FormMessage />

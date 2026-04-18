@@ -123,6 +123,7 @@ export function RenderUploadedState({
               src={previewUrl}
               alt="Preview"
               fill
+              unoptimized
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 320px"
               priority

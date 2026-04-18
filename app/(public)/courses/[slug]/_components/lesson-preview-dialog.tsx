@@ -9,7 +9,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { getPreviewAction } from "../_actions/get-preview";
-import { Loader2, BookOpen } from "lucide-react";
+import { Loader2, BookOpen, Lock } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 import type { LessonPreviewType } from "@/app/data/public-get-lesson-preview";
 
 export default function LessonPreviewDialog({
@@ -69,42 +71,71 @@ export default function LessonPreviewDialog({
               </DialogTitle>
             </DialogHeader>
 
-            {/* Video */}
-            {lesson.videoUrl && (
-              <div className="mt-4 rounded-xl overflow-hidden bg-black">
-                <video
-                  controls
-                  className="w-full aspect-video"
-                  src={lesson.videoUrl}
-                  preload="metadata"
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
-
-            {/* Content */}
-            {lesson.contentHtml ? (
-              <div
-                className="mt-4 prose prose-neutral dark:prose-invert max-w-none leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: lesson.contentHtml }}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <BookOpen className="size-8 text-muted-foreground/50 mb-2" />
-                <p className="text-muted-foreground">
-                  No content available yet.
+            {"restricted" in lesson && lesson.restricted ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Lock className="size-10 text-muted-foreground/50 mb-3" />
+                <h3 className="font-semibold text-lg mb-1">
+                  Enroll to Access This Lesson
+                </h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  This lesson requires enrollment. Enroll in the course to
+                  access all content.
                 </p>
+                {"price" in lesson.chapter.course && (
+                  <Link
+                    href={
+                      lesson.chapter.course.price === 0
+                        ? `/courses/${lesson.chapter.course.slug}`
+                        : `/checkout/${lesson.chapter.course.id}`
+                    }
+                    className={buttonVariants()}
+                  >
+                    {lesson.chapter.course.price === 0
+                      ? "Enroll for Free"
+                      : "Buy Now"}
+                  </Link>
+                )}
               </div>
-            )}
+            ) : (
+              <>
+                {/* Video */}
+                {lesson.videoUrl && (
+                  <div className="mt-4 rounded-xl overflow-hidden bg-black">
+                    <video
+                      controls
+                      className="w-full aspect-video"
+                      src={lesson.videoUrl}
+                      preload="metadata"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
 
-            {/* Enrollment prompt */}
-            <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
-              <p className="text-sm text-muted-foreground">
-                Enjoyed this preview? Enroll in the full course to access all
-                lessons.
-              </p>
-            </div>
+                {/* Content */}
+                {lesson.contentHtml ? (
+                  <div
+                    className="mt-4 prose prose-neutral dark:prose-invert max-w-none leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: lesson.contentHtml }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <BookOpen className="size-8 text-muted-foreground/50 mb-2" />
+                    <p className="text-muted-foreground">
+                      No content available yet.
+                    </p>
+                  </div>
+                )}
+
+                {/* Enrollment prompt */}
+                <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Enjoyed this preview? Enroll in the full course to access all
+                    lessons.
+                  </p>
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">

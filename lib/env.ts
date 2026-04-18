@@ -25,6 +25,11 @@ export const env = createEnv({
     AWS_ENDPOINT_URL_S3: z.string().url().optional(),
     AWS_ENDPOINT_URL_IAM: z.string().url().optional(),
     AWS_REGION: optionalString,
+    PAYMOB_SECRET_KEY: optionalString,
+    PAYMOB_PUBLIC_KEY: optionalString,
+    PAYMOB_HMAC_SECRET: optionalString,
+    PAYMOB_CARD_INTEGRATION_ID: optionalString,
+    PAYMOB_WALLET_INTEGRATION_ID: optionalString,
   },
   client: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: optionalString,
