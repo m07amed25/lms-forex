@@ -62,6 +62,7 @@ export default function EnrollButton({
             const result = await enrollInCourse(courseId);
             if (result.status === "success") {
               toast.success(result.message);
+              router.push(`/courses/${courseSlug}`);
             } else {
               toast.error(result.message);
             }
