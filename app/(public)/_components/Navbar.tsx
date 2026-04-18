@@ -39,8 +39,8 @@ const navItems: NavItem[] = [
     match: "prefix",
   },
   {
-    name: "Dashboard",
-    href: "/dashboard",
+    name: "My Courses",
+    href: "/my-courses",
     match: "prefix",
     requiresAuth: true,
   },
