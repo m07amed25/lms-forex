@@ -27,7 +27,7 @@
 | 7     | Course Management — Admin CRUD | ✅ Done |
 | 8     | Chapters & Lessons System      | ✅ Done |
 | 9     | Public Course Catalog          | ✅ Done |
-| 10    | Enrollment & Payment           | 🔲 Todo |
+| 10    | Enrollment & Payment           | ✅ Todo |
 | 11    | Student Learning Experience    | 🔲 Todo |
 | 12    | User Profile                   | 🔲 Todo |
 | 13    | Admin Analytics (Real Data)    | 🔲 Todo |
@@ -141,7 +141,7 @@
 
 ---
 
-## 🔲 Phase 10: Enrollment & Payment
+## ✅ Phase 10: Enrollment & Payment
 
 - Enrollment schema
 - Mobile Wallet / Visa Paymob integration

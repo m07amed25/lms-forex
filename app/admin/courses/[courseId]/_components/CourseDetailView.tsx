@@ -5,7 +5,7 @@ import { AdminCourseDetailType } from "@/app/data/admin/admin-get-course";
 import { tiptapJsonToHtml } from "@/lib/tiptap-html";
 import {
   Clock,
-  DollarSign,
+  Banknote,
   BarChart3,
   Tag,
   Link as LinkIcon,
@@ -81,9 +81,9 @@ const CourseDetailView = ({
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <Banknote className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Price:</span>
-              <span className="font-medium">${course.price.toFixed(2)}</span>
+              <span className="font-medium">EGP {course.price.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-muted-foreground" />

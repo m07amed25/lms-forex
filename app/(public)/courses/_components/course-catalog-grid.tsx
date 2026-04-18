@@ -4,8 +4,10 @@ import type { PublicCourseType } from "@/app/data/public-get-courses";
 
 export default function CourseCatalogGrid({
   courses,
+  enrolledCourseIds,
 }: {
   courses: PublicCourseType[];
+  enrolledCourseIds: string[];
 }) {
   if (courses.length === 0) {
     return (
@@ -24,7 +26,7 @@ export default function CourseCatalogGrid({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {courses.map((course) => (
-        <PublicCourseCard key={course.slug} course={course} />
+        <PublicCourseCard key={course.slug} course={course} isEnrolled={enrolledCourseIds.includes(course.id)} />
       ))}
     </div>
   );

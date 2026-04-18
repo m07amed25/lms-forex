@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { AdminCourseType } from "@/app/data/admin/admin-get-courses";
 import Link from "next/link";
-import { DollarSign, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 
 function getStatusVariant(
   status: string,
@@ -66,8 +66,7 @@ const AdminCourseCard = ({ course }: { course: AdminCourseType }) => {
               {course.category}
             </Badge>
             <div className="flex items-center gap-1 text-xs text-muted-foreground ml-auto">
-              <DollarSign className="h-3 w-3" />
-              <span className="font-medium">{course.price.toFixed(2)}</span>
+              <span className="font-medium">EGP {course.price.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />

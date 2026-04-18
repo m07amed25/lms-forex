@@ -43,6 +43,7 @@ export default async function publicGetCourses(params?: {
       skip: (currentPage - 1) * COURSES_PAGE_SIZE,
       take: COURSES_PAGE_SIZE,
       select: {
+        id: true,
         title: true,
         smallDescription: true,
         duration: true,

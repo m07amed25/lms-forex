@@ -76,11 +76,21 @@ export default function CourseHero({
           </span>
         </div>
 
-        <div className="flex items-center gap-4 mt-2">
-          <span className="text-3xl font-bold text-primary">
-            {course.price === 0 ? "Free" : `$${course.price.toFixed(2)}`}
-          </span>
-        </div>
+        {enrollmentStatus !== "Active" && (
+          <div className="flex items-center gap-4 mt-2">
+            <span className="text-3xl font-bold text-primary">
+              {course.price === 0 ? "Free" : `EGP ${course.price.toFixed(2)}`}
+            </span>
+          </div>
+        )}
+
+        {enrollmentStatus === "Active" && (
+          <div className="flex items-center gap-2 mt-2">
+            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30" variant="outline">
+              Enrolled
+            </Badge>
+          </div>
+        )}
 
         <EnrollButton
           courseId={course.id}

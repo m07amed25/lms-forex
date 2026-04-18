@@ -8,6 +8,9 @@ import CourseFilters from "./_components/course-filters";
 import { SearchX, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { prisma } from "@/lib/db";
 
 type CoursesPageProps = {
   searchParams: Promise<{
@@ -31,6 +34,17 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
       }),
       publicGetCategories(),
     ]);
+
+  // Fetch enrolled course IDs for the current user
+  const session = await auth.api.getSession({ headers: await headers() });
+  let enrolledCourseIds: string[] = [];
+  if (session) {
+    const enrollments = await prisma.enrollment.findMany({
+      where: { userId: session.user.id, status: "Active" },
+      select: { courseId: true },
+    });
+    enrolledCourseIds = enrollments.map((e) => e.courseId);
+  }
 
   const hasActiveFilters = params.search || params.level || params.category;
 
@@ -99,7 +113,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
             {totalCount !== 1 ? "s" : ""}
           </p>
 
-          <CourseCatalogGrid courses={courses} />
+          <CourseCatalogGrid courses={courses} enrolledCourseIds={enrolledCourseIds} />
 
           <CatalogPagination
             currentPage={currentPage}

@@ -16,8 +16,10 @@ const levelColors: Record<string, string> = {
 
 export default function PublicCourseCard({
   course,
+  isEnrolled,
 }: {
   course: PublicCourseType;
+  isEnrolled?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -71,7 +73,11 @@ export default function PublicCourseCard({
           {/* Price & Duration */}
           <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/50">
             <span className="text-lg font-bold text-primary">
-              {course.price === 0 ? "Free" : `$${course.price.toFixed(2)}`}
+              {isEnrolled
+                ? "Enrolled"
+                : course.price === 0
+                  ? "Free"
+                  : `EGP ${course.price.toFixed(2)}`}
             </span>
             <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Clock className="size-3.5" />
