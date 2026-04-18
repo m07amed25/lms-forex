@@ -23,6 +23,7 @@ model User {
   courses       Course[]
   sessions      Session[]
   enrollments   Enrollment[]
+  progress      UserProgress[]
 
   @@map("user")
 }
@@ -126,6 +127,7 @@ model Lesson {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  progress      UserProgress[]
 
   @@unique([chapterId, position])
   @@index([chapterId])
@@ -187,5 +189,19 @@ enum OrderStatus {
   Pending
   Completed
   Failed
+}
+
+model UserProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@map("user_progress")
 }
 
