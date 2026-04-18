@@ -141,3 +141,12 @@ export const reorderLessonsSchema = z.object({
 });
 
 export type ReorderLessonsInput = z.infer<typeof reorderLessonsSchema>;
+
+export const enrollInCourseSchema = z.object({
+  courseId: z.string().uuid({ message: "Valid course ID is required" }),
+});
+
+export const createPaymentSchema = z.object({
+  courseId: z.string().uuid({ message: "Valid course ID is required" }),
+});
+

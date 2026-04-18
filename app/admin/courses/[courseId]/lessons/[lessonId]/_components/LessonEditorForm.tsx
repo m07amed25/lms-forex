@@ -158,6 +158,7 @@ const LessonEditorForm = ({ lesson, courseId }: LessonEditorFormProps) => {
                     <Uploader
                       value={field.value ?? undefined}
                       onChange={(key) => field.onChange(key || null)}
+                      previewUrl={lesson.videoUrl}
                       accept={{
                         "video/mp4": [".mp4"],
                         "video/webm": [".webm"],

@@ -15,7 +15,6 @@ import {
   GraduationCap,
   Target,
   Award,
-  CheckCircle,
   Play,
 } from "lucide-react";
 import Link from "next/link";

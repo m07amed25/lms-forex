@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { Clock, BookOpen } from "lucide-react";
-import Link from "next/link";
 import type { PublicCourseDetailType } from "@/app/data/public-get-course-by-slug";
+import type { EnrollmentStatus } from "@prisma/client";
+import EnrollButton from "./enroll-button";
 
 const levelColors: Record<string, string> = {
   Beginner: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30",
@@ -16,8 +16,12 @@ const levelColors: Record<string, string> = {
 
 export default function CourseHero({
   course,
+  enrollmentStatus,
+  isAuthenticated,
 }: {
   course: PublicCourseDetailType;
+  enrollmentStatus: EnrollmentStatus | null;
+  isAuthenticated: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -78,16 +82,13 @@ export default function CourseHero({
           </span>
         </div>
 
-        <Link
-          href="/login"
-          className={buttonVariants({
-            size: "lg",
-            className:
-              "gap-2 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow w-fit",
-          })}
-        >
-          {course.price === 0 ? "Enroll for Free" : "Enroll Now"}
-        </Link>
+        <EnrollButton
+          courseId={course.id}
+          courseSlug={course.slug}
+          price={course.price}
+          enrollmentStatus={enrollmentStatus}
+          isAuthenticated={isAuthenticated}
+        />
       </div>
     </section>
   );

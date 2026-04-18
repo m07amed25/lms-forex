@@ -1,6 +1,7 @@
 # Salma Forex LMS
 
 ## Full Project Plan — Enhanced
+
 **Next.js 16 · TypeScript · Prisma · Better Auth · Arcjet · S3**  
 **April 2026**
 
@@ -15,25 +16,25 @@
 
 ## Project Phase Summary
 
-| Phase | Description                          | Status  |
-|------|--------------------------------------|---------|
-| 1    | Foundation & Infrastructure          | ✅ Done  |
-| 2    | Authentication & Authorization       | ✅ Done  |
-| 3    | Admin Dashboard Shell                | ✅ Done  |
-| 4    | Course Creation (Admin)              | ✅ Done  |
-| 5    | Course Listing (Admin)               | ✅ Done  |
-| 6    | Public Landing Page                  | ✅ Done  |
-| 7    | Course Management — Admin CRUD      | ✅ Done  |
-| 8    | Chapters & Lessons System            | ✅ Done  |
-| 9    | Public Course Catalog                | ✅ Done  |
-| 10   | Enrollment & Payment                 | 🔲 Todo |
-| 11   | Student Learning Experience          | 🔲 Todo |
-| 12   | User Profile                         | 🔲 Todo |
-| 13   | Admin Analytics (Real Data)          | 🔲 Todo |
-| 14   | Admin User Management                | 🔲 Todo |
-| 15   | Reviews & Ratings                   | 🔲 Todo |
-| 16   | Certificates                         | 🔲 Todo |
-| 17   | Polish & Production                  | 🔲 Todo |
+| Phase | Description                    | Status  |
+| ----- | ------------------------------ | ------- |
+| 1     | Foundation & Infrastructure    | ✅ Done |
+| 2     | Authentication & Authorization | ✅ Done |
+| 3     | Admin Dashboard Shell          | ✅ Done |
+| 4     | Course Creation (Admin)        | ✅ Done |
+| 5     | Course Listing (Admin)         | ✅ Done |
+| 6     | Public Landing Page            | ✅ Done |
+| 7     | Course Management — Admin CRUD | ✅ Done |
+| 8     | Chapters & Lessons System      | ✅ Done |
+| 9     | Public Course Catalog          | ✅ Done |
+| 10    | Enrollment & Payment           | 🔲 Todo |
+| 11    | Student Learning Experience    | 🔲 Todo |
+| 12    | User Profile                   | 🔲 Todo |
+| 13    | Admin Analytics (Real Data)    | 🔲 Todo |
+| 14    | Admin User Management          | 🔲 Todo |
+| 15    | Reviews & Ratings              | 🔲 Todo |
+| 16    | Certificates                   | 🔲 Todo |
+| 17    | Polish & Production            | 🔲 Todo |
 
 ---
 
@@ -41,30 +42,30 @@
 
 ## ✅ Phase 1: Foundation & Infrastructure — DONE
 
-| # | Task | Description | Status |
-|--|------|------------|--------|
-| 1 | Project setup | Next.js 16, TypeScript 5, Tailwind 4 | ✅ |
-| 2 | shadcn/ui setup | UI primitives | ✅ |
-| 3 | PostgreSQL + Prisma | Neon + WebSocket | ✅ |
-| 4 | Env validation | @t3-oss/env-nextjs | ✅ |
-| 5 | Theme system | next-themes + CSS vars | ✅ |
-| 6 | tryCatch + ApiResponse | Error handling | ✅ |
-| 7 | ESLint config | Strict rules | ✅ |
+| #   | Task                   | Description                          | Status |
+| --- | ---------------------- | ------------------------------------ | ------ |
+| 1   | Project setup          | Next.js 16, TypeScript 5, Tailwind 4 | ✅     |
+| 2   | shadcn/ui setup        | UI primitives                        | ✅     |
+| 3   | PostgreSQL + Prisma    | Neon + WebSocket                     | ✅     |
+| 4   | Env validation         | @t3-oss/env-nextjs                   | ✅     |
+| 5   | Theme system           | next-themes + CSS vars               | ✅     |
+| 6   | tryCatch + ApiResponse | Error handling                       | ✅     |
+| 7   | ESLint config          | Strict rules                         | ✅     |
 
 ---
 
 ## ✅ Phase 2: Authentication & Authorization — DONE
 
-| # | Task | Description | Status |
-|--|------|------------|--------|
-| 1 | Better Auth | GitHub OAuth + OTP | ✅ |
-| 2 | Roles | Admin/User roles | ✅ |
-| 3 | Login page | LoginForm | ✅ |
-| 4 | OTP verification | verify-request | ✅ |
-| 5 | Guards | requireAdmin | ✅ |
-| 6 | Unauthorized page | /unauthorized | ✅ |
-| 7 | Email templates | React Email | ✅ |
-| 8 | Arcjet security | Rate limiting + bot protection | ✅ |
+| #   | Task              | Description                    | Status |
+| --- | ----------------- | ------------------------------ | ------ |
+| 1   | Better Auth       | GitHub OAuth + OTP             | ✅     |
+| 2   | Roles             | Admin/User roles               | ✅     |
+| 3   | Login page        | LoginForm                      | ✅     |
+| 4   | OTP verification  | verify-request                 | ✅     |
+| 5   | Guards            | requireAdmin                   | ✅     |
+| 6   | Unauthorized page | /unauthorized                  | ✅     |
+| 7   | Email templates   | React Email                    | ✅     |
+| 8   | Arcjet security   | Rate limiting + bot protection | ✅     |
 
 ---
 
@@ -104,7 +105,7 @@
 
 ---
 
-#  Active Phase
+# Active Phase
 
 ## ✅ Phase 7: Course Management — Admin CRUD
 
@@ -143,9 +144,10 @@
 ## 🔲 Phase 10: Enrollment & Payment
 
 - Enrollment schema
-- Stripe / Paymob integration
+- Mobile Wallet / Visa Paymob integration
 - Checkout flow
 - Webhook handler
+- Custom Callback url on success or fail to check the status in the website and check the use status
 - Free enrollment
 - Access guards
 
