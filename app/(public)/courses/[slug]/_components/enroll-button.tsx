@@ -14,6 +14,7 @@ type EnrollButtonProps = {
   price: number;
   enrollmentStatus: EnrollmentStatus | null;
   isAuthenticated: boolean;
+  firstLessonId: string | null;
 };
 
 export default function EnrollButton({
@@ -22,14 +23,18 @@ export default function EnrollButton({
   price,
   enrollmentStatus,
   isAuthenticated,
+  firstLessonId,
 }: EnrollButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   if (enrollmentStatus === "Active") {
+    const learningUrl = firstLessonId
+      ? `/courses/${courseSlug}/lessons/${firstLessonId}`
+      : `/courses/${courseSlug}`;
     return (
       <Link
-        href={`/courses/${courseSlug}`}
+        href={learningUrl}
         className={buttonVariants({ size: "lg", className: "gap-2 text-base w-fit" })}
       >
         Continue Learning
@@ -62,7 +67,7 @@ export default function EnrollButton({
             const result = await enrollInCourse(courseId);
             if (result.status === "success") {
               toast.success(result.message);
-              router.push(`/courses/${courseSlug}`);
+              router.push(`/courses/${courseSlug}/lessons/${firstLessonId ?? ""}`);
             } else {
               toast.error(result.message);
             }

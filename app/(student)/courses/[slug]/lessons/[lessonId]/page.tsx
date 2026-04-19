@@ -14,7 +14,7 @@ export default async function LessonPage({
 }: {
   params: Promise<{ slug: string; lessonId: string }>;
 }) {
-  const { slug: courseId, lessonId } = await params;
+  const { slug, lessonId } = await params;
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
@@ -34,14 +34,17 @@ export default async function LessonPage({
           id: true,
           position: true,
           courseId: true,
+          course: { select: { slug: true } },
         },
       },
     },
   });
 
-  if (!lesson || lesson.chapter.courseId !== courseId) {
+  if (!lesson || lesson.chapter.course.slug !== slug) {
     notFound();
   }
+
+  const courseId = lesson.chapter.courseId;
 
   const courseData = await getCoursePlayerData(courseId, session.user.id);
   if (!courseData) notFound();
@@ -67,7 +70,7 @@ export default async function LessonPage({
   const currentIndex = allLessons.findIndex((l) => l.id === lessonId);
   if (currentIndex >= 0 && currentIndex < allLessons.length - 1) {
     const next = allLessons[currentIndex + 1];
-    nextLessonUrl = `/courses/${courseId}/lessons/${next.id}`;
+    nextLessonUrl = `/courses/${slug}/lessons/${next.id}`;
     nextLessonTitle = next.title;
     isLastLesson = false;
   }

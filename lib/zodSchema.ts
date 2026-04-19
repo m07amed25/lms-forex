@@ -150,3 +150,30 @@ export const createPaymentSchema = z.object({
   courseId: z.string().uuid({ message: "Valid course ID is required" }),
 });
 
+// ─── Profile Schemas ────────────────────────────────────────
+
+export const updateProfileSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters" })
+    .max(100, { message: "Name must be at most 100 characters" }),
+  bio: z
+    .string()
+    .max(500, { message: "Bio must be at most 500 characters" })
+    .optional()
+    .or(z.literal("")),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+export const updateAvatarSchema = z.object({
+  imageFileKey: z.string().min(1, { message: "Image file key is required" }),
+});
+
+export type UpdateAvatarInput = z.infer<typeof updateAvatarSchema>;
+
+export const revokeSessionSchema = z.object({
+  sessionId: z.string().min(1, { message: "Session ID is required" }),
+});
+
+export type RevokeSessionInput = z.infer<typeof revokeSessionSchema>;

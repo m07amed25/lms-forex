@@ -10,6 +10,19 @@ import { LoginNotificationEmail } from "@/components/emails/login-notification";
 import React from "react";
 import { admin } from "better-auth/plugins";
 
+// Suppress Better Auth's noisy "fallback join" console.error for unauthenticated visitors.
+// This is a known issue in better-call where getSession logs internally when no session exists.
+const _origConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  if (
+    typeof args[0] === "string" &&
+    args[0].includes("Failed to query fallback join")
+  ) {
+    return;
+  }
+  _origConsoleError(...args);
+};
+
 const githubProvider =
   env.GITHUB_ID && env.GITHUB_SECRET
     ? {
@@ -23,7 +36,7 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   logger: {
-    level: "debug",
+    level: "error",
   },
   ...(githubProvider
     ? {

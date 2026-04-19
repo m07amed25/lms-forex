@@ -53,9 +53,8 @@ export default async function MyCoursesPage() {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {coursesWithImages.map((course) => {
           const isComplete = course.progress === 100;
-          const lessonUrl = isComplete
-            ? `/courses/${course.courseId}/lessons/${course.nextLessonId ?? ""}`
-            : `/courses/${course.courseId}/lessons/${course.nextLessonId}`;
+          const firstLessonId = course.nextLessonId ?? "";
+          const lessonUrl = `/courses/${course.slug}/lessons/${firstLessonId}`;
 
           return (
             <Card key={course.courseId} className="flex flex-col overflow-hidden">

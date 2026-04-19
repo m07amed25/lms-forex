@@ -25,6 +25,9 @@ export default function CourseHero({
 }) {
   const [imgError, setImgError] = useState(false);
 
+  const firstLessonId =
+    course.chapters[0]?.lessons[0]?.id ?? null;
+
   return (
     <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       {/* Image */}
@@ -98,6 +101,7 @@ export default function CourseHero({
           price={course.price}
           enrollmentStatus={enrollmentStatus}
           isAuthenticated={isAuthenticated}
+          firstLessonId={firstLessonId}
         />
       </div>
     </section>

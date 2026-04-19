@@ -9,6 +9,7 @@ import {
   Mail,
   Settings,
   ShieldCheck,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -56,6 +57,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
   const menuItems: MenuItem[] = [
     { label: "Home", icon: Home, href: "/" },
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+    { label: "Profile", icon: User, href: "/profile" },
     { label: "Courses", icon: BookOpen, href: "/courses" },
     ...(isAdmin ? [{ label: "Admin", icon: Settings, href: "/admin" }] : []),
   ];

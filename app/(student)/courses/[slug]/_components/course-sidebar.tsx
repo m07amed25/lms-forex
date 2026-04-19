@@ -34,14 +34,14 @@ type Chapter = {
 };
 
 type CourseSidebarProps = {
-  courseId: string;
+  courseSlug: string;
   courseTitle: string;
   chapters: Chapter[];
   progress: { completed: number; total: number; percentage: number };
 };
 
 function SidebarContent({
-  courseId,
+  courseSlug,
   chapters,
   progress,
   currentLessonId,
@@ -71,7 +71,7 @@ function SidebarContent({
                   return (
                     <Link
                       key={lesson.id}
-                      href={`/courses/${courseId}/lessons/${lesson.id}`}
+                      href={`/courses/${courseSlug}/lessons/${lesson.id}`}
                       className={cn(
                         "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                         isActive
