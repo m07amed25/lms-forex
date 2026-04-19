@@ -2,16 +2,20 @@ import "server-only";
 
 import { prisma } from "@/lib/db";
 
-export async function getMyCoursesData(userId: string) {
+export async function getUserEnrolledCourses(userId: string) {
   const enrollments = await prisma.enrollment.findMany({
     where: { userId, status: "Active" },
+    orderBy: { createdAt: "desc" },
     select: {
+      createdAt: true,
       course: {
         select: {
           id: true,
           title: true,
           slug: true,
           fileKey: true,
+          level: true,
+          category: true,
           chapters: {
             orderBy: { position: "asc" },
             select: {
@@ -27,7 +31,7 @@ export async function getMyCoursesData(userId: string) {
   });
 
   const results = await Promise.all(
-    enrollments.map(async ({ course }) => {
+    enrollments.map(async ({ course, createdAt }) => {
       const allLessonIds = course.chapters.flatMap((ch) =>
         ch.lessons.map((l) => l.id),
       );
@@ -45,39 +49,16 @@ export async function getMyCoursesData(userId: string) {
 
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-      // Find next incomplete lesson
-      let nextLessonId: string | null = null;
-      if (percentage < 100 && total > 0) {
-        const completedSet = new Set(
-          (
-            await prisma.userProgress.findMany({
-              where: { userId, lessonId: { in: allLessonIds } },
-              select: { lessonId: true },
-            })
-          ).map((p) => p.lessonId),
-        );
-
-        for (const chapter of course.chapters) {
-          for (const lesson of chapter.lessons) {
-            if (!completedSet.has(lesson.id)) {
-              nextLessonId = lesson.id;
-              break;
-            }
-          }
-          if (nextLessonId) break;
-        }
-      }
-
-      // For completed courses, fall back to the first lesson
-      const firstLessonId = allLessonIds[0] ?? null;
-
       return {
         courseId: course.id,
         title: course.title,
         slug: course.slug,
         fileKey: course.fileKey,
-        progress: percentage,
-        nextLessonId: nextLessonId ?? firstLessonId,
+        level: course.level,
+        category: course.category,
+        enrolledAt: createdAt,
+        progress: { completed, total, percentage },
+        firstLessonId: allLessonIds[0] ?? null,
       };
     }),
   );

@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen } from "lucide-react";
+import { BookOpen, User } from "lucide-react";
+
 
 export default async function StudentLayout({
   children,
@@ -48,6 +49,13 @@ export default async function StudentLayout({
             >
               <BookOpen className="size-4" />
               My Courses
+            </Link>
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <User className="size-4" />
+              Profile
             </Link>
           </nav>
         </div>

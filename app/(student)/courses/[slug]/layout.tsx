@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
 import { getEnrollment } from "@/app/data/get-enrollment";
 import { getCoursePlayerData } from "@/app/data/get-course-player-data";
 import { CourseSidebar } from "./_components/course-sidebar";
@@ -13,12 +14,24 @@ export default async function CoursePlayerLayout({
   children: React.ReactNode;
   params: Promise<{ slug: string }>;
 }) {
-  const { slug: courseId } = await params;
+  const { slug } = await params;
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
     redirect("/login");
   }
+
+  // Resolve slug to course ID
+  const course = await prisma.course.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
+
+  if (!course) {
+    redirect("/courses");
+  }
+
+  const courseId = course.id;
 
   const enrollment = await getEnrollment(session.user.id, courseId);
 
@@ -42,7 +55,7 @@ export default async function CoursePlayerLayout({
   return (
     <div className="flex h-[calc(100svh-3.5rem)]">
       <CourseSidebar
-        courseId={courseId}
+        courseSlug={slug}
         courseTitle={data.course.title}
         chapters={data.chapters}
         progress={data.progress}

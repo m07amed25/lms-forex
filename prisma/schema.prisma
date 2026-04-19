@@ -19,6 +19,7 @@ model User {
   banReason     String?
   banned        Boolean?  @default(false)
   role          String?
+  bio           String?
   accounts      Account[]
   courses       Course[]
   sessions      Session[]
