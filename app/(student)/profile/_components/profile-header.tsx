@@ -39,7 +39,7 @@ export default async function ProfileHeader({
   return (
     <Card className="relative overflow-hidden border-0 shadow-lg">
       {/* Gradient Banner */}
-      <div className="h-32 bg-linear-to-br from-primary/80 via-primary/60 to-accent/40 sm:h-40" />
+      <div className="h-32 bg-gradient-to-br from-primary/80 via-primary/60 to-accent/40 sm:h-40" />
 
       <div className="relative px-6 pb-6">
         {/* Avatar - overlapping the banner */}
