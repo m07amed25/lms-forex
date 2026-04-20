@@ -1,4 +1,4 @@
-# Salma Forex LMS
+# Forex LMS
 
 ## Full Project Plan — Enhanced
 
